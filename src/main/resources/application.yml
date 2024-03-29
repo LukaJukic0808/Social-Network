@@ -1,0 +1,40 @@
+db-schema: social-network
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: info
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/postgres
+    driver-class-name: org.postgresql.Driver
+    username: root
+    password: root
+
+  flyway:
+    schemas: ${db-schema}
+
+  jpa:
+    open-in-view: false
+    database: postgresql
+    properties:
+      jakarta:
+        persistence:
+          schema-generation:
+            database:
+              action: validate
+      hibernate:
+        default_schema: ${db-schema}
+        jdbc:
+          time_zone: UTC
+
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+
+  sql:
+    init:
+      platform: postgres
