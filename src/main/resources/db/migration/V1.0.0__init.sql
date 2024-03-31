@@ -1,68 +1,58 @@
 create table users
 (
-    username             varchar(255)          not null primary key,
-    password             varchar(255)          not null,
-    enabled              boolean               not null default true
-);
-
-create table user_detail
-(
     id                   integer               not null primary key,
     username             varchar(255)          not null,
+    password             varchar(255)          not null,
     email                varchar(255)          not null,
     first_name           varchar(255)          not null,
     last_name            varchar(255)          not null,
-    constraint FK__USER_DETAIL__USERNAME foreign key (username) references users (username),
+    created_at           timestamp             not null,
+    constraint UQ__USERNAME unique (username),
     constraint UQ__EMAIL unique (email)
-);
-
-create table authorities
-(
-    username             varchar(255)          not null,
-    authority            varchar(36)           not null,
-    constraint FK__AUTHORITIES__USERNAME foreign key (username) references users (username)
 );
 
 create table post
 (
     id                   integer               not null primary key,
-    author               varchar(255)          not null,
+    author_id            integer               not null,
     title                varchar(255)          not null,
     content              varchar(2000)         not null,
     enable_comments      boolean               not null default true,
     created_at           timestamp             not null,
-    constraint FK__POST__AUTHOR foreign key (author) references users (username)
+    constraint FK__POST__AUTHOR_ID foreign key (author_id) references users (id)
 );
 
 create table comment
 (
     id                   integer               not null primary key,
-    author               varchar(255)          not null,
+    author_id            integer               not null,
     post_id              integer               not null,
     content              varchar(1000)         not null,
     created_at           timestamp             not null,
-    constraint FK__COMMENT__AUTHOR foreign key (author) references users (username),
+    constraint FK__COMMENT__AUTHOR_ID foreign key (author_id) references users (id),
     constraint FK__COMMENT__POST_ID foreign key (post_id) references post (id)
 );
 
 create table notification
 (
     id                   integer               not null primary key,
-    username             varchar(255)          not null,
+    sender_id            integer               not null,
+    receiver_id          integer               not null,
     post_id              integer               not null,
     content              varchar(255)          not null,
     created_at           timestamp             not null,
-    constraint FK__NOTIFICATION__USERNAME foreign key (username) references users (username),
+    constraint FK__NOTIFICATION__SENDER_ID foreign key (sender_id) references users (id),
+    constraint FK__NOTIFICATION__RECEIVER_ID foreign key (receiver_id) references users (id),
     constraint FK__NOTIFICATION__POST_ID foreign key (post_id) references post (id)
 );
 
 create table likes
 (
     id                   integer               not null primary key,
-    username             varchar(255)          not null,
+    user_id              integer               not null,
     post_id              integer               not null,
     created_at           timestamp             not null,
-    constraint FK__LIKES__USERNAME foreign key (username) references users (username),
+    constraint FK__LIKES__USER_ID foreign key (user_id) references users (id),
     constraint FK__LIKES__POST_ID foreign key (post_id) references post (id)
 );
 
