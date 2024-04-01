@@ -27,15 +27,19 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http.authorizeHttpRequests(configurer ->
-                configurer.anyRequest().authenticated());
-
         http.formLogin(form ->
                 form
                         .loginPage("/social-network/login")
                         .loginProcessingUrl("/social-network/login-check")
                         .defaultSuccessUrl("/social-network/home", true)
                         .permitAll()
+        );
+
+        http.authorizeHttpRequests(configurer -> {
+                    configurer.requestMatchers("/social-network/register**").permitAll();
+                    configurer.requestMatchers("/images/**").permitAll();
+                    configurer.anyRequest().authenticated();
+                }
         );
 
         http.logout(LogoutConfigurer::permitAll);

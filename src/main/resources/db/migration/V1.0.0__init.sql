@@ -1,6 +1,6 @@
 create table users
 (
-    id                   integer               not null primary key,
+    id                   serial                not null primary key,
     username             varchar(255)          not null,
     password             varchar(255)          not null,
     email                varchar(255)          not null,
@@ -13,7 +13,7 @@ create table users
 
 create table post
 (
-    id                   integer               not null primary key,
+    id                   serial                not null primary key,
     author_id            integer               not null,
     title                varchar(255)          not null,
     content              varchar(2000)         not null,
@@ -24,7 +24,7 @@ create table post
 
 create table comment
 (
-    id                   integer               not null primary key,
+    id                   serial                not null primary key,
     author_id            integer               not null,
     post_id              integer               not null,
     content              varchar(1000)         not null,
@@ -35,7 +35,7 @@ create table comment
 
 create table notification
 (
-    id                   integer               not null primary key,
+    id                   serial                not null primary key,
     sender_id            integer               not null,
     receiver_id          integer               not null,
     post_id              integer               not null,
@@ -48,7 +48,7 @@ create table notification
 
 create table likes
 (
-    id                   integer               not null primary key,
+    id                   serial                not null primary key,
     user_id              integer               not null,
     post_id              integer               not null,
     created_at           timestamp             not null,

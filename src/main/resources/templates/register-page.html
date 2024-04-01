@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Social Network - log in</title>
+        <title>Social Network - register</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/png" th:href="@{/images/favicon.png}" />
@@ -17,7 +17,7 @@
             <div style="margin-top: 15px;" class="col-md-6 offset-md-3">
                 <div class="card border-info">
                     <div class="card-header bg-info">
-                        Sign In
+                        Registration
                     </div>
 
                     <div class="card-body">
@@ -58,12 +58,12 @@
                                 <div style="margin-top: 10px;" class="form-group">
                                     <div class="row align-items-center">
                                         <div class="col-md-6 controls">
-                                            <button type="submit" class="btn btn-success">Login</button>
+                                            <button type="submit" class="btn btn-success">Register</button>
                                         </div>
                                         <div class="col-md-6">
-                                            <p class="text-end my-auto">Don't have an account?
-                                                <a th:href="@{/social-network/register}" class="link-primary">
-                                                    Register now!
+                                            <p class="text-end my-auto">Have an account?
+                                                <a th:href="@{/social-network/login}" class="link-primary">
+                                                    Sign in!
                                                 </a>
                                             </p>
                                         </div>
