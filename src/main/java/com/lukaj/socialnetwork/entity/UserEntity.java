@@ -5,6 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
 
 import java.util.List;
 import java.util.Set;
@@ -16,18 +18,26 @@ import java.util.Set;
 })
 public class UserEntity extends AbstractEntity {
 
+    @NotBlank(message = "First name field cannot be blank.")
     @Column(name = "first_name")
     private String firstName;
 
+    @NotBlank(message = "Last name field cannot be blank.")
     @Column(name = "last_name")
     private String lastName;
 
+    @NotBlank(message = "Username field cannot be blank.")
     @Column(name = "username")
     private String username;
 
+    @Pattern(regexp = "^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$",
+            message = "Password must have at least 8 characters, at least one lowercase and uppercase " +
+                    "English letter and at least one digit.")
     @Column(name = "password")
     private String password;
 
+    @Pattern(regexp = "[A-Za-z0-9._%+\\-]+@[A-Za-z0-9.\\-]+\\.[A-Za-z]{2,}",
+            message = "Invalid email. Example: name@example.com")
     @Column(name = "email")
     private String email;
 

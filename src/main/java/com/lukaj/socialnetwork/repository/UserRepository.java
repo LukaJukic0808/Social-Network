@@ -1,4 +1,4 @@
-package com.lukaj.socialnetwork.security.repository;
+package com.lukaj.socialnetwork.repository;
 
 import com.lukaj.socialnetwork.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -6,4 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {
 
     UserEntity findByUsername(String username);
+
+    UserEntity findByEmail(String email);
 }

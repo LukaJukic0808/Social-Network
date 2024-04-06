@@ -1,4 +1,4 @@
-package com.lukaj.socialnetwork.security.model;
+package com.lukaj.socialnetwork.security;
 
 import com.lukaj.socialnetwork.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
