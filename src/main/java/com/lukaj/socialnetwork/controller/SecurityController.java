@@ -1,5 +1,6 @@
 package com.lukaj.socialnetwork.controller;
 
+import com.lukaj.socialnetwork.entity.RegisterUserStatus;
 import com.lukaj.socialnetwork.entity.UserEntity;
 import com.lukaj.socialnetwork.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -7,7 +8,6 @@ import jakarta.validation.Valid;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -25,11 +26,9 @@ import java.util.Map;
 public class SecurityController {
 
     private final UserService userService;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public SecurityController(UserService userService) {
         this.userService = userService;
-        this.bCryptPasswordEncoder = new BCryptPasswordEncoder();
     }
 
     @GetMapping("/login")
@@ -63,6 +62,7 @@ public class SecurityController {
     @PostMapping("/register")
     public String processRegistration(@Valid @ModelAttribute("user") UserEntity user,
                                       BindingResult bindingResult, RedirectAttributes attributes,
+                                      @RequestParam("passwordRepeated") String repeatedPassword,
                                       Model theModel) {
 
         if (bindingResult.hasErrors()) {
@@ -70,25 +70,31 @@ public class SecurityController {
             return "register-page";
         }
 
-        if (userService.findByUsername(user.getUsername()) != null) {
+        RegisterUserStatus status = userService.registerUser(user, repeatedPassword);
+
+        if (status == RegisterUserStatus.NON_UNIQUE_USERNAME) {
 
             theModel.addAttribute("user", user);
-            theModel.addAttribute("nonUniqueUsername", "Username already exists in database.");
+            theModel.addAttribute("nonUniqueUsername", "Username already exists. Try to think of new one.");
 
             return "register-page";
         }
 
-        if (userService.findByEmail(user.getEmail()) != null) {
+        if (status == RegisterUserStatus.NON_UNIQUE_EMAIL) {
 
             theModel.addAttribute("user", user);
-            theModel.addAttribute("nonUniqueEmail", "Email already exists in database.");
+            theModel.addAttribute("nonUniqueEmail", "Email already exists. Please input different one.");
 
             return "register-page";
         }
 
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        if (status == RegisterUserStatus.PASSWORD_NO_MATCH) {
 
-        userService.save(user);
+            theModel.addAttribute("user", user);
+            theModel.addAttribute("passwordNoMatch", "Password not repeated correctly. Please try again.");
+
+            return "register-page";
+        }
 
         attributes.addFlashAttribute("registration", "successful");
 
