@@ -15,7 +15,7 @@ create table post
 (
     id                   serial                not null primary key,
     author_id            integer               not null,
-    title                varchar(255)          not null,
+    image_url            varchar(2000),
     content              varchar(2000)         not null,
     enable_comments      boolean               not null default true,
     created_at           timestamp             not null,

@@ -19,8 +19,8 @@ public class PostEntity extends AbstractEntity {
     @JoinColumn(name = "author_id", foreignKey = @ForeignKey(name = "FK__POST__AUTHOR_ID"))
     private UserEntity author;
 
-    @Column(name = "title")
-    private String title;
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @Column(name = "content")
     private String content;
@@ -45,12 +45,12 @@ public class PostEntity extends AbstractEntity {
         this.author = author;
     }
 
-    public String getTitle() {
-        return title;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
     public String getContent() {
