@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" lang="en"
+      th:replace="~{base :: layout(~{::title}, ~{::main})}">
+
+<head>
+    <title>Social Network - home</title>
+</head>
+
+<body>
+<main>
+    <div class="row mt-3">
+        <div class="col-md-12">
+                <div th:if="${postCreated}">
+                    <div class="alert alert-success col-xs-offset-2 col-xs-8" id="toRemove">
+                        Post created successfully.
+                    </div>
+                </div>
+
+                <div class="container">
+                    Hello <span th:text="${user.getUsername()}"></span>!
+                    <span th:text="${usersPost}"></span>
+                </div>
+        </div>
+    </div>
+
+
+    <script>
+        window.onload = function() {
+            const element = document.getElementById('toRemove');
+            setTimeout(function () {
+                if (element) {
+                    element.parentNode.removeChild(element);
+                }
+            }, 5000);
+        };
+    </script>
+</main>
+</body>
+
+</html>

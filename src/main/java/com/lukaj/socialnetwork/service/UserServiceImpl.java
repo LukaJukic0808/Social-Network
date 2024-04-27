@@ -1,5 +1,6 @@
 package com.lukaj.socialnetwork.service;
 
+import com.lukaj.socialnetwork.entity.PostEntity;
 import com.lukaj.socialnetwork.entity.RegisterUserStatus;
 import com.lukaj.socialnetwork.entity.UserEntity;
 import com.lukaj.socialnetwork.repository.UserRepository;
@@ -7,9 +8,14 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+
+@Transactional
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
@@ -50,15 +56,15 @@ public class UserServiceImpl implements UserService{
     @Override
     public RegisterUserStatus registerUser(UserEntity user, String repeatedPassword) {
 
-        if(findByUsername(user.getUsername()) != null) {
+        if (findByUsername(user.getUsername()) != null) {
             return RegisterUserStatus.NON_UNIQUE_USERNAME;
         }
 
-        if(findByEmail(user.getEmail()) != null) {
+        if (findByEmail(user.getEmail()) != null) {
             return RegisterUserStatus.NON_UNIQUE_EMAIL;
         }
 
-        if(!user.getPassword().equals(repeatedPassword)) {
+        if (!user.getPassword().equals(repeatedPassword)) {
             return RegisterUserStatus.PASSWORD_NO_MATCH;
         }
 
@@ -66,5 +72,16 @@ public class UserServiceImpl implements UserService{
         save(user);
 
         return RegisterUserStatus.SUCCESSFUL;
+    }
+
+    @Transactional
+    @Override
+    public List<PostEntity> getPostsByUsername(String username) {
+        UserEntity user = findByUsername(username);
+        List<PostEntity> posts = user.getPosts();
+        if(posts.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return posts;
     }
 }

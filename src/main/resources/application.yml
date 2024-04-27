@@ -38,3 +38,4 @@ spring:
   sql:
     init:
       platform: postgres
+

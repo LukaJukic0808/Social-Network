@@ -7,6 +7,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.List;
 import java.util.Set;
@@ -22,6 +23,7 @@ public class PostEntity extends AbstractEntity {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @NotBlank(message = "Description is required.")
     @Column(name = "content")
     private String content;
 
