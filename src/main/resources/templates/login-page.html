@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Social Network - log in</title>
+        <title>Social Network - Log in</title>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" type="image/png" th:href="@{/images/favicon.png}" />
@@ -31,21 +31,21 @@
                                         <div>
                                             <div th:if="${param.error}">
 
-                                                <div class="alert alert-danger col-xs-offset-1 col-xs-10">
+                                                <div class="alert alert-danger offset-sm-1 col-sm-10">
                                                     Invalid username and/or password.
                                                 </div>
 
                                             </div>
                                             <div th:if="${param.logout}">
 
-                                                <div class="alert alert-success col-xs-offset-1 col-xs-10">
+                                                <div class="alert alert-success offset-sm-1 col-sm-10">
                                                     Logged out successfully.
                                                 </div>
 
                                             </div>
                                             <div th:if="${registration}">
 
-                                                <div class="alert alert-success col-xs-offset-1 col-xs-10">
+                                                <div class="alert alert-success offset-sm-1 col-sm-10">
                                                     Registration successful.
                                                 </div>
 
@@ -85,6 +85,7 @@
                 </div>
             </div>
         </div>
+        <br><br><br><br><br><br>
         <script>
             window.onload = function() {
                 let loginForm = document.getElementById('login-form');

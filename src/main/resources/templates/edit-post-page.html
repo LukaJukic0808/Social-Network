@@ -3,22 +3,23 @@
       th:replace="~{base :: layout(~{::title}, ~{::main})}">
 
 <head>
-    <title>Create new post</title>
+    <title>Edit post</title>
 </head>
 
 <body>
 <main>
-    <div class="col-md-8 offset-md-2" style="margin-top: 8%;" id="create-post">
+    <div class="col-md-8 offset-md-2" style="margin-top: 8%;" id="edit-post">
         <div class="card border-info">
             <div class="card-header bg-info">
-                Create new post
+                Edit post
             </div>
 
             <div class="card-body">
                 <div class="card-text">
 
-                    <form action="#" th:action="@{/social-network/new-post}" th:object="${post}" method="POST" class="form-horizontal">
-
+                    <form action="#" th:action="@{/social-network/edit-post}" th:object="${post}" method="POST" class="form-horizontal">
+                        <input type="hidden" th:field="*{id}"/>
+                        <input type="hidden" th:field="*{createdAt}"/>
                         <div class="form-group">
                             <div class="col-md-12">
                                 <div th:if="${#fields.hasErrors('content')}"
@@ -41,7 +42,7 @@
                         <div class="form-group mt-3">
                             <div class="row align-items-center">
                                 <div class="col-md-6 controls">
-                                    <button type="submit" class="btn btn-success">Create new post</button>
+                                    <button type="submit" class="btn btn-success">Save changes</button>
                                 </div>
                             </div>
                         </div>

@@ -1,10 +1,9 @@
 package com.lukaj.socialnetwork.service;
 
-import com.lukaj.socialnetwork.entity.PostEntity;
 import com.lukaj.socialnetwork.entity.RegisterUserStatus;
 import com.lukaj.socialnetwork.entity.UserEntity;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
 
@@ -12,11 +11,15 @@ public interface UserService {
 
     UserEntity findByEmail(String email);
 
+    Optional<UserEntity> findById(Integer id);
+
     UserEntity save(UserEntity user);
 
     UserEntity getCurrentUser();
 
     RegisterUserStatus registerUser(UserEntity user, String repeatedPassword);
 
-    List<PostEntity> getPostsByUsername(String username);
+    Integer getLikesSizeByUsername(String username);
+
+    Integer getCommentsSizeByUsername(String username);
 }

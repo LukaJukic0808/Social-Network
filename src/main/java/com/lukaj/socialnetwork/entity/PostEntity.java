@@ -2,6 +2,7 @@ package com.lukaj.socialnetwork.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ForeignKey;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -33,10 +34,10 @@ public class PostEntity extends AbstractEntity {
     @OneToMany(mappedBy = "post")
     private Set<NotificationEntity> notifications;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private List<CommentEntity> comments;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
     private Set<LikeEntity> likes;
 
     public UserEntity getAuthor() {

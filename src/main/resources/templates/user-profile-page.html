@@ -3,41 +3,54 @@
       th:replace="~{base :: layout(~{::title}, ~{::main})}">
 
 <head>
-    <title>Social Network - Home</title>
+    <title>Profile page</title>
 </head>
 
 <body>
 <main>
     <div class="row mt-2 mx-2 d-flex justify-content-center">
-        <div th:if="${postCreated}">
-            <div class="row mt-3" id="toRemove0">
-                <div class="alert alert-success offset-sm-2 col-sm-8">
-                    Post created successfully.
-                </div>
-            </div>
-        </div>
-        <div th:if="${postEdited}">
-            <div class="row mt-3" id="toRemove1">
-                <div class="alert alert-success offset-sm-2 col-sm-8">
-                    Post edited successfully.
+        <div class="col-12">
+            <div class="jumbotron fluid-jumbotron border border-primary rounded mb-4 mt-2 bg-light">
+                <div class="container">
+                    <div class="row mx-1 mt-2 mb-2 align-items-center">
+                        <div class="col-6 d-flex justify-content-start align-items-center">
+                            <span class="display-5 me-2">Username: </span>
+                            <span class="display-5 fw-bold" th:text="${userProfile.username}"></span>
+                        </div>
+                        <div class="col-3 d-flex justify-content-end align-items-center">
+                            <img th:src="@{/images/like.png}"
+                                 class="img-fluid col-lg-3 col-xl-2 col-5 col-md-4 col-sm-6" alt="Like">
+                            <span th:text="${totalLikes}" class="d-inline-block ms-1 fw-bold"></span>
+                        </div>
+                        <div class="col-3 d-flex justify-content-end align-items-center">
+                            <img th:src="@{/images/comment.png}"
+                                 class="img-fluid col-lg-3 col-xl-2 col-5 col-md-4 col-sm-6" alt="Like">
+                            <span th:text="${totalComments}" class="d-inline-block ms-1 fw-bold"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-sm-8 offset-sm-2">
+                <div class="row mb-3 border border-primary rounded p-1 d-flex justify-content-center bg-light">
+                    <div class="col-12">
+                        <span class="users-post">All author's posts:</span>
+                    </div>
+                </div>
                 <div th:each="post : ${posts}">
                     <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded">
                         <div class="row mt-1">
                             <div class="col-3 text-start">
                                 <span class="text-secondary d-none d-md-inline">Author: </span>
-                                <a class="link-dark" th:href="@{/social-network/users/__${post.getAuthor().getId()}__}"
-                                th:text="${post.getAuthor().getUsername()}"></a>
+                                <a class="link-dark" th:href="@{/social-network/users/__${userProfile.getId()}__}"
+                                   th:text="${userProfile.getUsername()}"></a>
                             </div>
                             <div class="col-5 offset-4 text-center d-flex justify-content-end">
                                 <span class="text-secondary" th:text="${#dates.format(post.getCreatedAt(), 'dd-MM-yyyy HH:mm')}"></span>
                             </div>
                         </div>
-                        <div th:if="${user.getUsername() == post.getAuthor().getUsername()}">
+                        <div th:if="${user.getUsername() == userProfile.getUsername()}">
                             <div class="row mt-2 mx-1">
                                 <div class="col-3 d-flex justify-content-start">
                                     <a class="btn btn-primary" th:href="@{/social-network/edit-post/__${post.getId()}__}"
@@ -89,18 +102,6 @@
     </div>
 
     <script>
-        window.onload = function() {
-            const element0 = document.getElementById('toRemove0');
-            const element1 = document.getElementById('toRemove1');
-            setTimeout(function () {
-                if (element0) {
-                    element0.parentNode.removeChild(element0);
-                }
-                if (element1) {
-                    element1.parentNode.removeChild(element1);
-                }
-            }, 5000);
-        };
     </script>
 </main>
 </body>

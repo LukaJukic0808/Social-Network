@@ -1,6 +1,7 @@
 package com.lukaj.socialnetwork.service;
 
-import com.lukaj.socialnetwork.entity.PostEntity;
+import com.lukaj.socialnetwork.entity.CommentEntity;
+import com.lukaj.socialnetwork.entity.LikeEntity;
 import com.lukaj.socialnetwork.entity.RegisterUserStatus;
 import com.lukaj.socialnetwork.entity.UserEntity;
 import com.lukaj.socialnetwork.repository.UserRepository;
@@ -10,8 +11,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Transactional
 @Service
@@ -36,6 +37,11 @@ public class UserServiceImpl implements UserService {
     public UserEntity findByEmail(String email) {
 
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public Optional<UserEntity> findById(Integer id) {
+        return userRepository.findById(id);
     }
 
     @Override
@@ -74,14 +80,24 @@ public class UserServiceImpl implements UserService {
         return RegisterUserStatus.SUCCESSFUL;
     }
 
-    @Transactional
     @Override
-    public List<PostEntity> getPostsByUsername(String username) {
+    public Integer getLikesSizeByUsername(String username) {
         UserEntity user = findByUsername(username);
-        List<PostEntity> posts = user.getPosts();
-        if(posts.isEmpty()) {
-            return new ArrayList<>();
+        Set<LikeEntity> likes = user.getLikes();
+        if(likes.isEmpty()) {
+            return 0;
         }
-        return posts;
+        return likes.size();
     }
+
+    @Override
+    public Integer getCommentsSizeByUsername(String username) {
+        UserEntity user = findByUsername(username);
+        Set<CommentEntity> comments = user.getComments();
+        if(comments.isEmpty()) {
+            return 0;
+        }
+        return comments.size();
+    }
+
 }
