@@ -2,7 +2,7 @@ package com.lukaj.socialnetwork.service;
 
 import com.lukaj.socialnetwork.entity.CommentEntity;
 import com.lukaj.socialnetwork.entity.LikeEntity;
-import com.lukaj.socialnetwork.entity.RegisterUserStatus;
+import com.lukaj.socialnetwork.entity.SaveUserStatus;
 import com.lukaj.socialnetwork.entity.UserEntity;
 import com.lukaj.socialnetwork.repository.UserRepository;
 import org.springframework.security.core.Authentication;
@@ -46,7 +46,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity save(UserEntity user) {
-
         return userRepository.save(user);
     }
 
@@ -60,24 +59,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public RegisterUserStatus registerUser(UserEntity user, String repeatedPassword) {
+    public SaveUserStatus registerUser(UserEntity user, String repeatedPassword) {
 
         if (findByUsername(user.getUsername()) != null) {
-            return RegisterUserStatus.NON_UNIQUE_USERNAME;
+            return SaveUserStatus.NON_UNIQUE_USERNAME;
         }
 
         if (findByEmail(user.getEmail()) != null) {
-            return RegisterUserStatus.NON_UNIQUE_EMAIL;
+            return SaveUserStatus.NON_UNIQUE_EMAIL;
         }
 
         if (!user.getPassword().equals(repeatedPassword)) {
-            return RegisterUserStatus.PASSWORD_NO_MATCH;
+            return SaveUserStatus.PASSWORD_NO_MATCH;
         }
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         save(user);
 
-        return RegisterUserStatus.SUCCESSFUL;
+        return SaveUserStatus.SUCCESSFUL;
     }
 
     @Override
@@ -98,6 +97,19 @@ public class UserServiceImpl implements UserService {
             return 0;
         }
         return comments.size();
+    }
+
+    @Override
+    public SaveUserStatus modifyUser(UserEntity user, String repeatedPassword) {
+
+        if (!user.getPassword().equals(repeatedPassword)) {
+            return SaveUserStatus.PASSWORD_NO_MATCH;
+        }
+
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        save(user);
+
+        return SaveUserStatus.SUCCESSFUL;
     }
 
 }

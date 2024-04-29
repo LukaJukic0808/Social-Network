@@ -1,0 +1,119 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" lang="en"
+      th:replace="~{base :: layout(~{::title}, ~{::main})}">
+
+<head>
+    <title>Manage profile</title>
+</head>
+
+<body>
+<main>
+    <div class="col-lg-6 offset-lg-3" style="margin-top: 8%;" id="manage-form">
+        <div class="card border-info">
+            <div class="card-header bg-info">
+                Manage profile
+            </div>
+
+            <div class="card-body">
+                <div class="card-text">
+
+                    <form action="#" th:action="@{/social-network/manage-user}" th:object="${user}" method="POST" class="form-horizontal">
+                        <input type="hidden" th:field="*{id}">
+                        <input type="hidden" th:field="*{createdAt}">
+                        <div class="input-group mb-4">
+                            <input type="text" th:field="*{username}" placeholder="Username" class="form-control text-secondary" readonly/>
+                        </div>
+                        <div class="input-group mb-4">
+                            <input type="text" th:field="*{email}" placeholder="Email" class="form-control text-secondary" readonly/>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div th:if="${#fields.hasErrors('password')}"
+                                     class="alert alert-danger offset-sm-1 col-sm-10"
+                                     th:errors="*{password}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div th:if="${passwordNoMatch}"
+                                     class="alert alert-danger offset-sm-1 col-sm-10"
+                                     th:text="${passwordNoMatch}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-3 mt-1">
+                            <input type="password" th:field="*{password}" placeholder="Repeat old password or create new password" id="password" class="form-control" />
+                            <button class="btn btn-outline-info" type="button" id="passwordToggle">Show</button>
+                        </div>
+
+                        <div class="input-group mb-3 mt-1">
+                            <input type="password" placeholder="Repeat password from above" id="passwordRepeated" name="passwordRepeated" class="form-control" />
+                            <button class="btn btn-outline-info" type="button" id="passwordToggleRepeated">Show</button>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div th:if="${#fields.hasErrors('firstName')}"
+                                     class="alert alert-danger offset-sm-1 col-sm-10"
+                                     th:errors="*{firstName}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-4">
+                            <input type="text" th:field="*{firstName}" placeholder="First name" class="form-control" />
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <div th:if="${#fields.hasErrors('lastName')}"
+                                     class="alert alert-danger offset-sm-1 col-sm-10"
+                                     th:errors="*{lastName}">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group mb-4">
+                            <input type="text" th:field="*{lastName}" placeholder="Last name" class="form-control" />
+                        </div>
+
+                        <div class="form-group mt-1">
+                            <div class="row align-items-center">
+                                <div class="col-6 controls">
+                                    <button type="submit" class="btn btn-success">Save changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        $('#passwordToggle').click(function(){
+            let passwordField = $('#password');
+            let passwordFieldType = passwordField.attr('type');
+            if(passwordFieldType === "password") {
+                passwordField.attr('type', 'text');
+                $(this).text('Hide');
+            } else {
+                passwordField.attr('type', 'password');
+                $(this).text('Show');
+            }
+        });
+        $('#passwordToggleRepeated').click(function(){
+            let passwordField = $('#passwordRepeated');
+            let passwordFieldType = passwordField.attr('type');
+            if(passwordFieldType === "password") {
+                passwordField.attr('type', 'text');
+                $(this).text('Hide');
+            } else {
+                passwordField.attr('type', 'password');
+                $(this).text('Show');
+            }
+        });
+    </script>
+</main>
+</body>
+
+
+</html>

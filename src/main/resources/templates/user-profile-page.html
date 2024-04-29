@@ -10,7 +10,7 @@
 <main>
     <div class="row mt-2 mx-2 d-flex justify-content-center">
         <div class="col-12">
-            <div class="jumbotron fluid-jumbotron border border-primary rounded mb-4 mt-2 bg-light">
+            <div class="jumbotron fluid-jumbotron border border-primary rounded mb-4 mt-3 bg-light">
                 <div class="container">
                     <div class="row mx-1 mt-2 mb-2 align-items-center">
                         <div class="col-6 d-flex justify-content-start align-items-center">
@@ -28,11 +28,26 @@
                             <span th:text="${totalComments}" class="d-inline-block ms-1 fw-bold"></span>
                         </div>
                     </div>
+                    <div th:if="${user.getUsername() == userProfile.getUsername()}">
+                        <div class="row mx-1 mt-0 mb-2 align-items-end">
+                            <div class="col-3 offset-9 d-flex justify-content-end align-items-center">
+                                <a class="btn btn-primary" th:href="@{/social-network/manage-user}"
+                                   th:text="Manage"></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
         <div class="row mt-2">
             <div class="col-sm-8 offset-sm-2">
+                <div th:if="${postModified}">
+                    <div class="row mt-0" id="toRemove0">
+                        <div class="alert alert-success">
+                            Profile modified successfully.
+                        </div>
+                    </div>
+                </div>
                 <div class="row mb-3 border border-primary rounded p-1 d-flex justify-content-center bg-light">
                     <div class="col-12">
                         <span class="users-post">All author's posts:</span>
@@ -102,6 +117,14 @@
     </div>
 
     <script>
+        window.onload = function() {
+            const element0 = document.getElementById('toRemove0');
+            setTimeout(function () {
+                if (element0) {
+                    element0.parentNode.removeChild(element0);
+                }
+            }, 5000);
+        };
     </script>
 </main>
 </body>

@@ -1,6 +1,6 @@
 package com.lukaj.socialnetwork.controller;
 
-import com.lukaj.socialnetwork.entity.RegisterUserStatus;
+import com.lukaj.socialnetwork.entity.SaveUserStatus;
 import com.lukaj.socialnetwork.entity.UserEntity;
 import com.lukaj.socialnetwork.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -70,9 +70,9 @@ public class SecurityController {
             return "register-page";
         }
 
-        RegisterUserStatus status = userService.registerUser(user, repeatedPassword);
+        SaveUserStatus status = userService.registerUser(user, repeatedPassword);
 
-        if (status == RegisterUserStatus.NON_UNIQUE_USERNAME) {
+        if (status == SaveUserStatus.NON_UNIQUE_USERNAME) {
 
             theModel.addAttribute("user", user);
             theModel.addAttribute("nonUniqueUsername", "Username already exists. Try to think of new one.");
@@ -80,7 +80,7 @@ public class SecurityController {
             return "register-page";
         }
 
-        if (status == RegisterUserStatus.NON_UNIQUE_EMAIL) {
+        if (status == SaveUserStatus.NON_UNIQUE_EMAIL) {
 
             theModel.addAttribute("user", user);
             theModel.addAttribute("nonUniqueEmail", "Email already exists. Please input different one.");
@@ -88,7 +88,7 @@ public class SecurityController {
             return "register-page";
         }
 
-        if (status == RegisterUserStatus.PASSWORD_NO_MATCH) {
+        if (status == SaveUserStatus.PASSWORD_NO_MATCH) {
 
             theModel.addAttribute("user", user);
             theModel.addAttribute("passwordNoMatch", "Password not repeated correctly. Please try again.");

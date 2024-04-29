@@ -1,16 +1,26 @@
 package com.lukaj.socialnetwork.controller;
 
 import com.lukaj.socialnetwork.entity.PostEntity;
+import com.lukaj.socialnetwork.entity.SaveUserStatus;
 import com.lukaj.socialnetwork.entity.UserEntity;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -27,7 +37,7 @@ public class ProfileController {
 
     @GetMapping("/users/{userId}")
     public String showUserProfile(@PathVariable Integer userId,
-                                  Model theModel) {
+                                  Model theModel, HttpServletRequest request) {
 
         Optional<UserEntity> userOpt = userService.findById(userId);
 
@@ -40,9 +50,47 @@ public class ProfileController {
             theModel.addAttribute("posts", posts);
             theModel.addAttribute("totalLikes", userService.getLikesSizeByUsername(userProfile.getUsername()));
             theModel.addAttribute("totalComments", userService.getCommentsSizeByUsername(userProfile.getUsername()));
+            Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+            if(inputFlashMap != null) {
+                theModel.addAttribute("postModified", inputFlashMap.get("management"));
+            }
             return "user-profile-page";
         }
 
         return "redirect:/social-network/home";
+    }
+
+    @GetMapping("/manage-user")
+    public String showManageUserPage(Model theModel) {
+
+        theModel.addAttribute("user", userService.getCurrentUser());
+
+        return "manage-user-page";
+    }
+
+    @PostMapping("/manage-user")
+    public String processUserManagement(@Valid @ModelAttribute("user") UserEntity user,
+                                        BindingResult bindingResult, RedirectAttributes attributes,
+                                        @RequestParam("passwordRepeated") String repeatedPassword,
+                                        Model theModel) {
+
+        if (bindingResult.hasErrors()) {
+            theModel.addAttribute("user", user);
+            return "manage-user-page";
+        }
+
+        SaveUserStatus status = userService.modifyUser(user, repeatedPassword);
+
+        if (status == SaveUserStatus.PASSWORD_NO_MATCH) {
+
+            theModel.addAttribute("user", user);
+            theModel.addAttribute("passwordNoMatch", "Password not repeated correctly. Please try again.");
+
+            return "manage-user-page";
+        }
+
+        attributes.addFlashAttribute("management", "successful");
+
+        return String.format("redirect:/social-network/users/%d", user.getId());
     }
 }

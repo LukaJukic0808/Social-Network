@@ -1,6 +1,6 @@
 package com.lukaj.socialnetwork.service;
 
-import com.lukaj.socialnetwork.entity.RegisterUserStatus;
+import com.lukaj.socialnetwork.entity.SaveUserStatus;
 import com.lukaj.socialnetwork.entity.UserEntity;
 
 import java.util.Optional;
@@ -17,9 +17,11 @@ public interface UserService {
 
     UserEntity getCurrentUser();
 
-    RegisterUserStatus registerUser(UserEntity user, String repeatedPassword);
+    SaveUserStatus registerUser(UserEntity user, String repeatedPassword);
 
     Integer getLikesSizeByUsername(String username);
 
     Integer getCommentsSizeByUsername(String username);
+
+    SaveUserStatus modifyUser(UserEntity user, String repeatedPassword);
 }
