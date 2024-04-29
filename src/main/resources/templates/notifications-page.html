@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" lang="en"
+      th:replace="~{base :: layout(~{::title}, ~{::main})}">
+
+<head>
+    <title>Notifications page</title>
+</head>
+
+<body>
+<main>
+    <div class="row mt-2 mx-2 d-flex justify-content-center">
+        <div class="row mt-4">
+            <div class="col-sm-8 offset-sm-2">
+                <div class="row mb-3 border border-primary rounded p-1 d-flex justify-content-center bg-light">
+                    <div class="col-12">
+                        <div th:if="${notifications.size() != 0}">
+                            <span class="users-post">New notifications:</span>
+                        </div>
+                        <div th:if="${notifications.size() == 0}">
+                            <span class="users-post">You have no new notifications.</span>
+                        </div>
+                    </div>
+                </div>
+                <div th:each="notification : ${notifications}">
+                    <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded">
+                        <div class="row mt-1 align-items-center">
+                            <div class="col-9 text-start">
+                                <span>User</span>
+                                <a class="link-dark" th:href="@{/social-network/users/__${notification.sender.getId()}__}"
+                                   th:text="${notification.sender.getUsername()}"></a>
+                                <span th:text="${notification.content}"></span>
+                                <a class="link-dark" th:href="@{/social-network/posts/__${notification.post.getId()}__}">post</a>
+                                <span>at</span>
+                                <span th:text="${#dates.format(notification.getCreatedAt(), 'dd-MM-yyyy HH:mm')}"></span>
+                            </div>
+                            <div class="col-3 d-flex justify-content-end">
+                                <a class="btn btn-success mb-1">
+                                    Mark as read</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    </script>
+</main>
+</body>
+
+</html>

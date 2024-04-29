@@ -17,7 +17,7 @@
 
         <nav class="navbar navbar-expand-lg danger bg-primary">
             <div class="container-fluid">
-                <a class="navbar-brand text-light" th:href="@{/social-network/home}" style="font-weight: 400">Social network</a>
+                <a class="navbar-brand text-light" th:href="@{/social-network/home}" style="font-weight: 400; font-size: 1.2rem;">Social network</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -27,10 +27,12 @@
                             <a class="nav-link text-light" th:href="@{/social-network/new-post}">Create a post</a>
                         </li>
                     </ul>
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item">
-                            <a class="nav-link text-light" id="notification" th:href="@{/social-network/notifications}">New notifications</a>
-                        </li>
+                    <div class="navbar-nav mr-auto">
+                        <div th:if="${notificationsSize > 0}">
+                            <li class="nav-item">
+                                <a class="nav-link text-warning" id="notification" th:href="@{/social-network/notifications}">New notifications</a>
+                            </li>
+                        </div>
                         <li class="nav-item">
                             <a class="nav-link text-light" th:href="@{/social-network/users/__${user.getId()}__}">My profile</a>
                         </li>
@@ -43,7 +45,7 @@
                                 <input hidden type="submit" value="Sign Out"/>
                             </form>
                         </li>
-                    </ul>
+                    </div>
                 </div>
             </div>
         </nav>

@@ -1,8 +1,10 @@
 package com.lukaj.socialnetwork.controller;
 
+import com.lukaj.socialnetwork.entity.NotificationEntity;
 import com.lukaj.socialnetwork.entity.PostEntity;
 import com.lukaj.socialnetwork.entity.SaveUserStatus;
 import com.lukaj.socialnetwork.entity.UserEntity;
+import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,10 +31,13 @@ public class ProfileController {
 
     private final UserService userService;
     private final PostService postService;
+    private final NotificationService notificationService;
 
-    public ProfileController(UserService userService, PostService postService) {
+    public ProfileController(UserService userService, PostService postService,
+                             NotificationService notificationService) {
         this.userService = userService;
         this.postService = postService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/users/{userId}")
@@ -45,9 +50,11 @@ public class ProfileController {
             UserEntity userProfile = userOpt.get();
             UserEntity currentUser = userService.getCurrentUser();
             List<PostEntity> posts = postService.findAllByAuthorOrderByCreatedAtDescending(userProfile);
+            List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
             theModel.addAttribute("userProfile", userProfile);
             theModel.addAttribute("user", currentUser);
             theModel.addAttribute("posts", posts);
+            theModel.addAttribute("notificationsSize", usersNotifications.size());
             theModel.addAttribute("totalLikes", userService.getLikesSizeByUsername(userProfile.getUsername()));
             theModel.addAttribute("totalComments", userService.getCommentsSizeByUsername(userProfile.getUsername()));
             Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
@@ -63,7 +70,12 @@ public class ProfileController {
     @GetMapping("/manage-user")
     public String showManageUserPage(Model theModel) {
 
-        theModel.addAttribute("user", userService.getCurrentUser());
+        UserEntity currentUser = userService.getCurrentUser();
+
+        List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
+
+        theModel.addAttribute("user", currentUser);
+        theModel.addAttribute("notificationsSize", usersNotifications.size());
 
         return "manage-user-page";
     }

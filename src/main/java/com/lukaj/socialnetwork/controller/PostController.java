@@ -1,7 +1,9 @@
 package com.lukaj.socialnetwork.controller;
 
+import com.lukaj.socialnetwork.entity.NotificationEntity;
 import com.lukaj.socialnetwork.entity.PostEntity;
 import com.lukaj.socialnetwork.entity.UserEntity;
+import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
 import jakarta.validation.Valid;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 @Controller
@@ -24,10 +27,13 @@ public class PostController {
 
     private final UserService userService;
     private final PostService postService;
+    private final NotificationService notificationService;
 
-    public PostController(UserService userService, PostService postService) {
+    public PostController(UserService userService, PostService postService,
+                          NotificationService notificationService) {
         this.userService = userService;
         this.postService = postService;
+        this.notificationService = notificationService;
     }
 
     @GetMapping("/edit-post/{postId}")
@@ -35,6 +41,8 @@ public class PostController {
 
         Optional<PostEntity> post = postService.findOne(postId);
         UserEntity currentUser = userService.getCurrentUser();
+        List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
+
 
         if (post.isEmpty() || !post.get().getAuthor().getUsername().equals(currentUser.getUsername())) {
             return "redirect:/social-network/home";
@@ -42,6 +50,8 @@ public class PostController {
 
         theModel.addAttribute("post", post.get());
         theModel.addAttribute("user", currentUser);
+        theModel.addAttribute("notificationsSize", usersNotifications.size());
+
 
         return "edit-post-page";
     }
@@ -77,9 +87,12 @@ public class PostController {
     public String createPost(Model theModel) {
 
         UserEntity currentUser = userService.getCurrentUser();
+        List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
 
         theModel.addAttribute("post", new PostEntity());
         theModel.addAttribute("user", currentUser);
+        theModel.addAttribute("notificationsSize", usersNotifications.size());
+
 
         return "new-post-page";
     }
