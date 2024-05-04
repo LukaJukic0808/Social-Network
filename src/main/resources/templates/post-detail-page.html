@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.w3.org/1999/xhtml" lang="en"
+      th:replace="~{base :: layout(~{::title}, ~{::main})}">
+
+<head>
+    <title>Post detail</title>
+</head>
+
+<body>
+<main>
+    <div class="row mt-2 mx-2 d-flex justify-content-center">
+        <div class="row mt-2">
+            <div class="col-sm-10 offset-sm-1 col-md-8 offset-md-2">
+                <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded">
+                    <div class="row mt-1">
+                        <div class="col-3 text-start">
+                            <span class="text-secondary d-none d-md-inline">Author: </span>
+                            <a class="link-dark" th:href="@{/social-network/users/__${post.getAuthor().getId()}__}"
+                               th:text="${post.getAuthor().getUsername()}"></a>
+                        </div>
+                        <div class="col-5 offset-4 text-center d-flex justify-content-end">
+                            <span class="text-secondary" th:text="${#dates.format(post.getCreatedAt(), 'dd-MM-yyyy HH:mm')}"></span>
+                        </div>
+                    </div>
+                    <div th:if="${user.getUsername() == post.getAuthor().getUsername()}">
+                        <div class="row mt-2 mx-1">
+                            <div class="col-3 d-flex justify-content-start">
+                                <a class="btn btn-primary" th:href="@{/social-network/edit-post/__${post.getId()}__}"
+                                   th:text="Edit"></a>
+                            </div>
+                            <div class="col-3 offset-6 d-flex justify-content-end">
+                                <a class="btn btn-danger" th:text="Delete"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4 d-flex justify-content-center">
+                        <div class="col-12">
+                            <p th:text="${post.getContent()}" class="text-justify"></p>
+                        </div>
+                    </div>
+                    <div th:if="${!post.getImageUrl().isBlank()}">
+                        <div class="row mt-0 mb-2 d-flex justify-content-center">
+                            <div class="col-10 offset-1 mx-0 d-flex justify-content-center">
+                                <img th:src="${post.getImageUrl()}" class="img-fluid text-danger text-justify rounded" alt="Image is unreachable." loading="lazy">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mx-1 mt-3 mb-2 pt-2 align-items-center border-top border-primary">
+                        <div class="col-3 d-flex justify-content-start">
+                            <a class="btn btn-primary">
+                                Like
+                            </a>
+                        </div>
+                        <div class="col-3 d-flex justify-content-center align-items-center">
+                            <img th:src="@{/images/like.png}"
+                                 class="img-fluid col-lg-3 col-xl-2 col-5 col-md-4 col-sm-6" alt="Like">
+                            <span th:text="${post.getLikes().size()}" id="likeSize" class="d-inline-block ms-1 fw-bold"></span>
+                        </div>
+                        <div class="col-3 d-flex justify-content-center align-items-center">
+                            <img th:src="@{/images/comment.png}"
+                                 class="img-fluid col-lg-3 col-xl-2 col-5 col-md-4 col-sm-6" alt="Like">
+                            <span th:text="${post.getComments().size()}" id="commentSize" class="d-inline-block ms-1 fw-bold"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-2 mb-2 align-items-center">
+                    <div class="col-8 offset-2">
+                        <div th:if="${!post.enableComments}">
+                            <div class="row mb-2 border border-primary bg-light rounded">
+                                <div class="col-10 offset-1 p-2 text-center align-items-center">
+                                    <span class="text-danger d-block">Commenting is disabled.</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div th:if="${post.enableComments}">
+                            <div class="row mb-2 border border-primary bg-light rounded">
+                                <div class="form-horizontal">
+                                    <input id="postId" type="hidden" th:value="${post.getId()}">
+                                    <div class="input-group mt-2 mb-2">
+                                        <textarea id="commentContent" placeholder="Write something..." class="form-control" rows="4"></textarea>
+                                    </div>
+                                    <div class="form-group mt-0 mb-2">
+                                        <div class="row align-items-center">
+                                            <div class="col-md-6 controls">
+                                                <button onClick="onAddCommentClick()" class="btn btn-success">Add comment</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="newComment">
+
+                        </div>
+                        <div th:each="comment : ${comments}">
+                            <div class="row mb-2 border border-primary d-flex justify-content-center bg-light rounded">
+                                <div class="row mt-1">
+                                    <div class="col-3 text-start">
+                                        <span class="text-secondary d-none d-md-inline">Author: </span>
+                                        <a class="link-dark" th:href="@{/social-network/users/__${comment.getAuthor().getId()}__}"
+                                           th:text="${comment.getAuthor().getUsername()}"></a>
+                                    </div>
+                                    <div class="col-5 offset-4 text-center d-flex justify-content-end">
+                                        <span class="text-secondary" th:text="${#dates.format(comment.getCreatedAt(), 'dd-MM-yyyy HH:mm')}"></span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 d-flex justify-content-center">
+                                    <div class="col-12">
+                                        <p th:text="${comment.getContent()}" class="text-justify"></p>
+                                    </div>
+                                </div>
+                                <div th:if="${user.getUsername() == comment.getAuthor().getUsername()}">
+                                    <div class="row mt-0 mb-2 mx-1">
+                                        <div class="col-3 offset-9 d-flex justify-content-end">
+                                            <a class="btn btn-danger">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const commentContent = document.getElementById('commentContent');
+        const postIdInput = document.getElementById('postId')
+        let postId = Number(postIdInput.value)
+
+        function onAddCommentClick() {
+
+            let commentText = commentContent.value;
+
+            if(commentText.trim()) {
+
+                $.ajax({
+                    type: "post",
+                    contentType: "application/json",
+                    data: `{"commentContent": "${commentText.trim()}", "postId": ${postId}}`,
+                    url: "/social-network/comments/add-comment",
+                    dataType: "json",
+                    success: function (result) {
+                        $().append(result);
+
+                        const newCommentArea = $('#newComment')
+                        if(document.contains(document.getElementById("emptyCommentAlert"))) {
+                            document.getElementById("emptyCommentAlert").remove()
+                        }
+
+                        newCommentArea.html(
+                            `<div id="newComment">
+
+                            </div>
+                            <div class="row mb-2 border border-primary d-flex justify-content-center bg-light rounded" id="new-comment-box">
+                                    <div class="row mt-1">
+                                        <div class="col-3 text-start">
+                                            <span class="text-secondary d-none d-md-inline">Author: </span>
+                                            <a class="link-dark" id="new-comment-link">
+                                            ${result["authorUsername"]}</a>
+                                        </div>
+                                        <div class="col-5 offset-4 text-center d-flex justify-content-end">
+                                            <span class="text-secondary">${result["createdAt"]}</span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-4 d-flex justify-content-center">
+                                        <div class="col-12">
+                                            <p class="text-justify">${result["content"]}</p>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-0 mb-2 me-3 mx-2">
+                                        <div class="col-3 offset-9 d-flex justify-content-end">
+                                            <a class="btn btn-danger" id="new-button-delete">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>`
+                        )
+
+                        newCommentArea.removeAttr('id')
+
+                        const profileLink = document.getElementById('new-comment-link');
+                        profileLink.setAttribute("href", "/social-network/users/" + result["authorId"])
+                        profileLink.removeAttribute('id')
+
+                        const deleteButton = document.getElementById('new-button-delete')
+                        deleteButton.setAttribute("onClick", "onDeleteCommentClick()")
+                        deleteButton.setAttribute('id', "delete-button-" + result["id"])
+
+                        const commentBox = document.getElementById('new-comment-box')
+                        commentBox.setAttribute('id', "comment-" + result["id"])
+
+                        const commentSize = document.getElementById('commentSize')
+                        let commentSizeNumber = Number(commentSize.innerText)
+                        commentSize.innerText = String(commentSizeNumber + 1)
+                    },
+                    error: function (result) {
+                        if(document.contains(document.getElementById("emptyCommentAlert"))) {
+                            document.getElementById("emptyCommentAlert").remove()
+                        }
+                        console.log("REST controller error")
+                    }
+                });
+
+            } else {
+
+                const newCommentArea = $('#newComment')
+                if(document.contains(document.getElementById("emptyCommentAlert"))) {
+                    document.getElementById("emptyCommentAlert").remove()
+                }
+                newCommentArea.html(
+                    `<div class="row" id="emptyCommentAlert">
+                        <div class="col-12 mt-2 text-center align-items-center">
+                            <div class="alert alert-danger">
+                                    You cannot post an empty comment.
+                            </div>
+                        </div>
+                    </div>
+                    <div id="newComment">
+
+                    </div>`
+                )
+                newCommentArea.removeAttr('id')
+            }
+        }
+
+    </script>
+
+</main>
+</body>
+
+</html>

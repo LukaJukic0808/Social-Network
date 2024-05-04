@@ -20,4 +20,9 @@ public class NotificationServiceImpl implements NotificationService {
     public List<NotificationEntity> findAllNotificationsByReceiver(UserEntity receiver) {
         return notificationRepository.findAllByReceiverOrderByCreatedAtDesc(receiver);
     }
+
+    @Override
+    public NotificationEntity save(NotificationEntity notificationEntity) {
+        return notificationRepository.save(notificationEntity);
+    }
 }

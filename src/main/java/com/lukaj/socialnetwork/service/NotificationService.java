@@ -8,4 +8,6 @@ import java.util.List;
 public interface NotificationService {
 
     List<NotificationEntity> findAllNotificationsByReceiver(UserEntity receiver);
+
+    NotificationEntity save(NotificationEntity notificationEntity);
 }

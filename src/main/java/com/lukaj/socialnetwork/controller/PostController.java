@@ -1,8 +1,10 @@
 package com.lukaj.socialnetwork.controller;
 
+import com.lukaj.socialnetwork.entity.CommentEntity;
 import com.lukaj.socialnetwork.entity.NotificationEntity;
 import com.lukaj.socialnetwork.entity.PostEntity;
 import com.lukaj.socialnetwork.entity.UserEntity;
+import com.lukaj.socialnetwork.service.CommentService;
 import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
@@ -28,12 +30,37 @@ public class PostController {
     private final UserService userService;
     private final PostService postService;
     private final NotificationService notificationService;
+    private final CommentService commentService;
 
     public PostController(UserService userService, PostService postService,
-                          NotificationService notificationService) {
+                          NotificationService notificationService, CommentService commentService) {
         this.userService = userService;
         this.postService = postService;
         this.notificationService = notificationService;
+        this.commentService = commentService;
+    }
+
+    @GetMapping("/posts/{postId}")
+    public String getPost(Model theModel, @PathVariable Integer postId) {
+
+        Optional<PostEntity> post = postService.findOne(postId);
+        UserEntity currentUser = userService.getCurrentUser();
+        List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
+
+        if (post.isEmpty()) {
+            return "redirect:/social-network/home";
+        }
+
+        PostEntity currentPost = post.get();
+
+        List<CommentEntity> comments = commentService.findAllByPost(currentPost);
+
+        theModel.addAttribute("post", currentPost);
+        theModel.addAttribute("user", currentUser);
+        theModel.addAttribute("comments", comments);
+        theModel.addAttribute("notificationsSize", usersNotifications.size());
+
+        return "post-detail-page";
     }
 
     @GetMapping("/edit-post/{postId}")
