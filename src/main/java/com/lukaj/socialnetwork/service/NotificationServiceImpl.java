@@ -1,9 +1,10 @@
 package com.lukaj.socialnetwork.service;
 
-import com.lukaj.socialnetwork.entity.NotificationEntity;
-import com.lukaj.socialnetwork.entity.UserEntity;
-import com.lukaj.socialnetwork.repository.NotificationRepository;
+import com.lukaj.socialnetwork.persistence.entity.NotificationEntity;
+import com.lukaj.socialnetwork.persistence.entity.UserEntity;
+import com.lukaj.socialnetwork.persistence.repository.NotificationRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,8 +22,15 @@ public class NotificationServiceImpl implements NotificationService {
         return notificationRepository.findAllByReceiverOrderByCreatedAtDesc(receiver);
     }
 
+    @Transactional
     @Override
     public NotificationEntity save(NotificationEntity notificationEntity) {
         return notificationRepository.save(notificationEntity);
+    }
+
+    @Transactional
+    @Override
+    public void remove(NotificationEntity notificationEntity) {
+        notificationRepository.delete(notificationEntity);
     }
 }

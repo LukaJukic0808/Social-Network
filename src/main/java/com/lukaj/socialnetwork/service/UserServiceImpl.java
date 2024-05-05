@@ -1,10 +1,10 @@
 package com.lukaj.socialnetwork.service;
 
-import com.lukaj.socialnetwork.entity.CommentEntity;
-import com.lukaj.socialnetwork.entity.LikeEntity;
-import com.lukaj.socialnetwork.entity.SaveUserStatus;
-import com.lukaj.socialnetwork.entity.UserEntity;
-import com.lukaj.socialnetwork.repository.UserRepository;
+import com.lukaj.socialnetwork.persistence.entity.CommentEntity;
+import com.lukaj.socialnetwork.persistence.entity.LikeEntity;
+import com.lukaj.socialnetwork.persistence.entity.SaveUserStatus;
+import com.lukaj.socialnetwork.persistence.entity.UserEntity;
+import com.lukaj.socialnetwork.persistence.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -79,21 +79,27 @@ public class UserServiceImpl implements UserService {
         return SaveUserStatus.SUCCESSFUL;
     }
 
+    // lazy loading
     @Override
     public Integer getLikesSizeByUsername(String username) {
+
+        // entity is now managed by Hibernate session (fetched from DB with repository)
         UserEntity user = findByUsername(username);
         Set<LikeEntity> likes = user.getLikes();
-        if(likes.isEmpty()) {
+        if(likes.isEmpty()) {   // trigger collection to be saved (isEmpty)
             return 0;
         }
         return likes.size();
     }
 
+    // lazy loading
     @Override
     public Integer getCommentsSizeByUsername(String username) {
+
+        // entity is now managed by Hibernate session (fetched from DB with repository)
         UserEntity user = findByUsername(username);
         Set<CommentEntity> comments = user.getComments();
-        if(comments.isEmpty()) {
+        if(comments.isEmpty()) {    // trigger collection to be saved (isEmpty)
             return 0;
         }
         return comments.size();
@@ -111,5 +117,4 @@ public class UserServiceImpl implements UserService {
 
         return SaveUserStatus.SUCCESSFUL;
     }
-
 }

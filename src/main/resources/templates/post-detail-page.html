@@ -9,9 +9,23 @@
 <body>
 <main>
     <div class="row mt-2 mx-2 d-flex justify-content-center">
+        <div th:if="${postCreated}">
+            <div class="row mt-3" id="toRemove0">
+                <div class="alert alert-success offset-sm-2 col-sm-8">
+                    Post created successfully.
+                </div>
+            </div>
+        </div>
+        <div th:if="${postEdited}">
+            <div class="row mt-3" id="toRemove1">
+                <div class="alert alert-success offset-sm-2 col-sm-8">
+                    Post edited successfully.
+                </div>
+            </div>
+        </div>
         <div class="row mt-2">
             <div class="col-sm-10 offset-sm-1 col-md-8 offset-md-2">
-                <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded">
+                <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded" th:id="'post-' + ${post.getId()}">
                     <div class="row mt-1">
                         <div class="col-3 text-start">
                             <span class="text-secondary d-none d-md-inline">Author: </span>
@@ -29,7 +43,34 @@
                                    th:text="Edit"></a>
                             </div>
                             <div class="col-3 offset-6 d-flex justify-content-end">
-                                <a class="btn btn-danger" th:text="Delete"></a>
+                                <a class="btn btn-danger" th:text="Delete" data-bs-toggle="modal" th:data-bs-target="'#modal-' + ${post.getId()}"></a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" th:id="'modal-' + ${post.getId()}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Delete post?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this post?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <form action="#" method="POST" th:action="@{/social-network/delete-post}" th:object="${post}" class="form-horizontal">
+                                        <input type="hidden" th:field="*{id}"/>
+                                        <input type="hidden" th:field="*{createdAt}"/>
+                                        <input type="hidden" th:field="*{content}"/>
+                                        <input type="hidden" th:field="*{author}"/>
+                                        <input type="hidden" th:field="*{imageUrl}"/>
+                                        <input type="hidden" th:field="*{enableComments}"/>
+                                        <div class="col-md-6 controls">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -47,9 +88,16 @@
                     </div>
                     <div class="row mx-1 mt-3 mb-2 pt-2 align-items-center border-top border-primary">
                         <div class="col-3 d-flex justify-content-start">
-                            <a class="btn btn-primary">
-                                Like
-                            </a>
+                            <div>
+                                <a class="btn btn-primary" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
+                                    Like
+                                </a>
+                            </div>
+                            <div th:if="${false}">
+                                <a class="btn btn-danger" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
+                                    Dislike
+                                </a>
+                            </div>
                         </div>
                         <div class="col-3 d-flex justify-content-center align-items-center">
                             <img th:src="@{/images/like.png}"
@@ -93,14 +141,14 @@
 
                         </div>
                         <div th:each="comment : ${comments}">
-                            <div class="row mb-2 border border-primary d-flex justify-content-center bg-light rounded">
+                            <div class="row mb-2 border border-primary d-flex justify-content-center bg-light rounded" th:id="'comment-' + ${comment.getId()}">
                                 <div class="row mt-1">
-                                    <div class="col-3 text-start">
+                                    <div class="col-6 text-start">
                                         <span class="text-secondary d-none d-md-inline">Author: </span>
                                         <a class="link-dark" th:href="@{/social-network/users/__${comment.getAuthor().getId()}__}"
                                            th:text="${comment.getAuthor().getUsername()}"></a>
                                     </div>
-                                    <div class="col-5 offset-4 text-center d-flex justify-content-end">
+                                    <div class="col-6 text-center d-flex justify-content-end">
                                         <span class="text-secondary" th:text="${#dates.format(comment.getCreatedAt(), 'dd-MM-yyyy HH:mm')}"></span>
                                     </div>
                                 </div>
@@ -112,7 +160,29 @@
                                 <div th:if="${user.getUsername() == comment.getAuthor().getUsername()}">
                                     <div class="row mt-0 mb-2 mx-1">
                                         <div class="col-3 offset-9 d-flex justify-content-end">
-                                            <a class="btn btn-danger">Delete</a>
+                                            <a class="btn btn-danger" th:text="Delete" data-bs-toggle="modal" th:data-bs-target="'#modal-comment-' + ${comment.getId()}"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal fade" th:id="'modal-comment-' + ${comment.getId()}" tabindex="-1" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Delete comment?</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                Are you sure you want to delete this comment?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <div class="form-horizontal">
+                                                    <div class="col-md-6 controls">
+                                                        <button onClick="onDeleteCommentClick(this.id)" th:id="'comment-delete-' + ${comment.getId()}" class="btn btn-danger" data-bs-dismiss="modal">
+                                                            Delete</button>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -155,12 +225,12 @@
                             </div>
                             <div class="row mb-2 border border-primary d-flex justify-content-center bg-light rounded" id="new-comment-box">
                                     <div class="row mt-1">
-                                        <div class="col-3 text-start">
+                                        <div class="col-6 text-start">
                                             <span class="text-secondary d-none d-md-inline">Author: </span>
                                             <a class="link-dark" id="new-comment-link">
                                             ${result["authorUsername"]}</a>
                                         </div>
-                                        <div class="col-5 offset-4 text-center d-flex justify-content-end">
+                                        <div class="col-6 text-center d-flex justify-content-end">
                                             <span class="text-secondary">${result["createdAt"]}</span>
                                         </div>
                                     </div>
@@ -171,7 +241,29 @@
                                     </div>
                                     <div class="row mt-0 mb-2 me-3 mx-2">
                                         <div class="col-3 offset-9 d-flex justify-content-end">
-                                            <a class="btn btn-danger" id="new-button-delete">Delete</a>
+                                            <a class="btn btn-danger" data-bs-toggle="modal" id="new-data-bs-target">Delete</a>
+                                        </div>
+                                    </div>
+                                    <div class="modal fade" id="new-modal-id" tabindex="-1" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title">Delete comment?</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    Are you sure you want to delete this comment?
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <div class="form-horizontal">
+                                                        <div class="col-md-6 controls">
+                                                            <button onClick="onDeleteCommentClick(this.id)" id="new-delete-modal-button" class="btn btn-danger" data-bs-dismiss="modal">
+                                                            Delete</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>`
@@ -183,9 +275,15 @@
                         profileLink.setAttribute("href", "/social-network/users/" + result["authorId"])
                         profileLink.removeAttribute('id')
 
-                        const deleteButton = document.getElementById('new-button-delete')
-                        deleteButton.setAttribute("onClick", "onDeleteCommentClick()")
-                        deleteButton.setAttribute('id', "delete-button-" + result["id"])
+                        const deleteButton = document.getElementById('new-data-bs-target');
+                        deleteButton.setAttribute("data-bs-target", "#modal-comment-" + result['id'])
+                        deleteButton.removeAttribute('id')
+
+                        const modal = document.getElementById('new-modal-id');
+                        modal.setAttribute("id", "modal-comment-" + result['id'])
+
+                        const modalDeleteButton = document.getElementById('new-delete-modal-button');
+                        modalDeleteButton.setAttribute("id", "comment-delete-" + result['id'])
 
                         const commentBox = document.getElementById('new-comment-box')
                         commentBox.setAttribute('id', "comment-" + result["id"])
@@ -222,6 +320,47 @@
                 )
                 newCommentArea.removeAttr('id')
             }
+
+            commentContent.value = "";
+        }
+
+        window.onload = function() {
+            const element0 = document.getElementById('toRemove0');
+            const element1 = document.getElementById('toRemove1');
+            setTimeout(function () {
+                if (element0) {
+                    element0.parentNode.removeChild(element0);
+                }
+                if (element1) {
+                    element1.parentNode.removeChild(element1);
+                }
+            }, 5000);
+        };
+
+        function onDeleteCommentClick(id) {
+
+            const regExp = /\d+/;
+            let commentId = id.match(regExp)
+            const comment = document.getElementById("comment-" + commentId)
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                data: `{"id": ${Number(commentId)}}`,
+                url: "/social-network/comments/delete-comment",
+                dataType: "json",
+                success: function (result) {
+                    $().append(result);
+
+                    comment.remove()
+                    const commentSize = document.getElementById('commentSize')
+                    let commentSizeNumber = Number(commentSize.innerText)
+                    commentSize.innerText = String(commentSizeNumber - 1)
+                },
+                error: function (result) {
+                    console.log("REST controller error")
+                }
+            });
+
         }
 
     </script>

@@ -1,6 +1,6 @@
 package com.lukaj.socialnetwork.security;
 
-import com.lukaj.socialnetwork.entity.UserEntity;
+import com.lukaj.socialnetwork.persistence.entity.UserEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 

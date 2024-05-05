@@ -1,7 +1,7 @@
 package com.lukaj.socialnetwork.service;
 
-import com.lukaj.socialnetwork.entity.SaveUserStatus;
-import com.lukaj.socialnetwork.entity.UserEntity;
+import com.lukaj.socialnetwork.persistence.entity.SaveUserStatus;
+import com.lukaj.socialnetwork.persistence.entity.UserEntity;
 
 import java.util.Optional;
 

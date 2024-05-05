@@ -1,9 +1,9 @@
 package com.lukaj.socialnetwork.controller;
 
-import com.lukaj.socialnetwork.entity.NotificationEntity;
-import com.lukaj.socialnetwork.entity.PostEntity;
-import com.lukaj.socialnetwork.entity.SaveUserStatus;
-import com.lukaj.socialnetwork.entity.UserEntity;
+import com.lukaj.socialnetwork.persistence.entity.NotificationEntity;
+import com.lukaj.socialnetwork.persistence.entity.PostEntity;
+import com.lukaj.socialnetwork.persistence.entity.SaveUserStatus;
+import com.lukaj.socialnetwork.persistence.entity.UserEntity;
 import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;

@@ -1,8 +1,8 @@
 package com.lukaj.socialnetwork.service;
 
-import com.lukaj.socialnetwork.entity.PostEntity;
-import com.lukaj.socialnetwork.entity.UserEntity;
-import com.lukaj.socialnetwork.repository.PostRepository;
+import com.lukaj.socialnetwork.persistence.entity.PostEntity;
+import com.lukaj.socialnetwork.persistence.entity.UserEntity;
+import com.lukaj.socialnetwork.persistence.repository.PostRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,5 +40,11 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostEntity> findAllByAuthorOrderByCreatedAtDescending(UserEntity author) {
         return postRepository.findAllByAuthorOrderByCreatedAtDesc(author);
+    }
+
+    @Transactional
+    @Override
+    public void remove(PostEntity post) {
+        postRepository.delete(post);
     }
 }

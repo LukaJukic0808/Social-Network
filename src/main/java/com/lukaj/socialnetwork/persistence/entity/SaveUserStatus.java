@@ -1,4 +1,4 @@
-package com.lukaj.socialnetwork.entity;
+package com.lukaj.socialnetwork.persistence.entity;
 
 public enum SaveUserStatus {
 

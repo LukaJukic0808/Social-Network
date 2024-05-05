@@ -1,6 +1,6 @@
-package com.lukaj.socialnetwork.repository;
+package com.lukaj.socialnetwork.persistence.repository;
 
-import com.lukaj.socialnetwork.entity.UserEntity;
+import com.lukaj.socialnetwork.persistence.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRepository extends JpaRepository<UserEntity, Integer> {

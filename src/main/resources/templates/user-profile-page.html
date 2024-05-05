@@ -20,7 +20,7 @@
                         <div class="col-3 d-flex justify-content-end align-items-center">
                             <img th:src="@{/images/like.png}"
                                  class="img-fluid col-lg-3 col-xl-2 col-5 col-md-4 col-sm-6" alt="Like">
-                            <span th:text="${totalLikes}" class="d-inline-block ms-1 fw-bold"></span>
+                            <span th:text="${totalLikes}" id="total-user-likes" class="d-inline-block ms-1 fw-bold"></span>
                         </div>
                         <div class="col-3 d-flex justify-content-end align-items-center">
                             <img th:src="@{/images/comment.png}"
@@ -54,7 +54,7 @@
                     </div>
                 </div>
                 <div th:each="post : ${posts}">
-                    <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded">
+                    <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded" th:id="'post-' + ${post.getId()}">
                         <div class="row mt-1">
                             <div class="col-3 text-start">
                                 <span class="text-secondary d-none d-md-inline">Author: </span>
@@ -72,7 +72,28 @@
                                        th:text="Edit"></a>
                                 </div>
                                 <div class="col-3 offset-6 d-flex justify-content-end">
-                                    <a class="btn btn-danger" th:text="Delete"></a>
+                                    <a class="btn btn-danger" th:text="Delete" data-bs-toggle="modal" th:data-bs-target="'#modal-' + ${post.getId()}"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" th:id="'modal-' + ${post.getId()}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Delete post?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete this post?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <div class="form-horizontal">
+                                            <div class="col-md-6 controls">
+                                                <button onClick="onDeletePostClick(this.id)" th:id="'post-delete-' + ${post.getId()}" class="btn btn-danger">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -90,14 +111,21 @@
                         </div>
                         <div class="row mx-1 mt-3 mb-2 pt-2 align-items-center border-top border-primary">
                             <div class="col-3 d-flex justify-content-start">
-                                <a class="btn btn-primary">
-                                    Like
-                                </a>
+                                <div>
+                                    <a class="btn btn-primary" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
+                                        Like
+                                    </a>
+                                </div>
+                                <div th:if="${false}">
+                                    <a class="btn btn-danger" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
+                                        Dislike
+                                    </a>
+                                </div>
                             </div>
                             <div class="col-3 d-flex justify-content-center align-items-center">
                                 <img th:src="@{/images/like.png}"
                                      class="img-fluid col-lg-3 col-xl-2 col-5 col-md-4 col-sm-6" alt="Like">
-                                <span th:text="${post.getLikes().size()}" class="d-inline-block ms-1 fw-bold"></span>
+                                <span th:text="${post.getLikes().size()}" th:id="'like-size-' + ${post.getId()}" class="d-inline-block ms-1 fw-bold"></span>
                             </div>
                             <div class="col-3 d-flex justify-content-center align-items-center">
                                 <img th:src="@{/images/comment.png}"

@@ -1,7 +1,7 @@
-package com.lukaj.socialnetwork.repository;
+package com.lukaj.socialnetwork.persistence.repository;
 
-import com.lukaj.socialnetwork.entity.CommentEntity;
-import com.lukaj.socialnetwork.entity.PostEntity;
+import com.lukaj.socialnetwork.persistence.entity.CommentEntity;
+import com.lukaj.socialnetwork.persistence.entity.PostEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

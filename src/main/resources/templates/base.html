@@ -30,14 +30,11 @@
                     <div class="navbar-nav mr-auto">
                         <div th:if="${notificationsSize > 0}">
                             <li class="nav-item">
-                                <a class="nav-link text-warning" id="notification" th:href="@{/social-network/notifications}">New notifications</a>
+                                <a class="nav-link text-warning" id="new-notifications" th:href="@{/social-network/notifications}">New notifications</a>
                             </li>
                         </div>
                         <li class="nav-item">
                             <a class="nav-link text-light" th:href="@{/social-network/users/__${user.getId()}__}">My profile</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-light" th:href="@{/social-network/about}">About project</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-light" href="javascript: document.logoutForm.submit()" role="menuitem">Logout</a>

@@ -44,7 +44,11 @@ public class SecurityConfig {
 
         http.logout(LogoutConfigurer::permitAll);
 
-        http.csrf().ignoringRequestMatchers("/social-network/comments/*");
+        http.csrf(csrf ->
+                csrf
+                        .ignoringRequestMatchers("/social-network/comments/*"
+                        )
+        );
 
         return http.build();
     }

@@ -14,15 +14,15 @@
                 <div class="row mb-3 border border-primary rounded p-1 d-flex justify-content-center bg-light">
                     <div class="col-12">
                         <div th:if="${notifications.size() != 0}">
-                            <span class="users-post">New notifications:</span>
+                            <span class="users-post" th:id="notifications-header">New notifications:</span>
                         </div>
                         <div th:if="${notifications.size() == 0}">
-                            <span class="users-post">You have no new notifications.</span>
+                            <span class="users-post" th:id="notifications-header">You have no new notifications.</span>
                         </div>
                     </div>
                 </div>
                 <div th:each="notification : ${notifications}">
-                    <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded">
+                    <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded" th:id="'notification-' + ${notification.getId()}">
                         <div class="row mt-1 align-items-center">
                             <div class="col-9 text-start">
                                 <span>User</span>
@@ -34,7 +34,7 @@
                                 <span th:text="${#dates.format(notification.getCreatedAt(), 'dd-MM-yyyy HH:mm')}"></span>
                             </div>
                             <div class="col-3 d-flex justify-content-end">
-                                <a class="btn btn-success mb-1">
+                                <a class="btn btn-success mb-1" onClick="onDeleteNotificationClick(this.id)" th:id="'notification-delete-' + ${notification.getId()}">
                                     Mark as read</a>
                             </div>
                         </div>

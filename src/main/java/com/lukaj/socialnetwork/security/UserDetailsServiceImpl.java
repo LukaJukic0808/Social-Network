@@ -1,7 +1,7 @@
 package com.lukaj.socialnetwork.security;
 
-import com.lukaj.socialnetwork.entity.UserEntity;
-import com.lukaj.socialnetwork.repository.UserRepository;
+import com.lukaj.socialnetwork.persistence.entity.UserEntity;
+import com.lukaj.socialnetwork.persistence.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

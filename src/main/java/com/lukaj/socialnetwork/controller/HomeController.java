@@ -1,20 +1,17 @@
 package com.lukaj.socialnetwork.controller;
 
-import com.lukaj.socialnetwork.entity.NotificationEntity;
-import com.lukaj.socialnetwork.entity.PostEntity;
-import com.lukaj.socialnetwork.entity.UserEntity;
+import com.lukaj.socialnetwork.persistence.entity.NotificationEntity;
+import com.lukaj.socialnetwork.persistence.entity.PostEntity;
+import com.lukaj.socialnetwork.persistence.entity.UserEntity;
 import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/social-network")
@@ -32,7 +29,7 @@ public class HomeController {
     }
 
     @GetMapping("/home")
-    public String home(Model theModel, HttpServletRequest request) {
+    public String home(Model theModel) {
 
         UserEntity currentUser = userService.getCurrentUser();
 
@@ -42,12 +39,6 @@ public class HomeController {
         theModel.addAttribute("user", currentUser);
         theModel.addAttribute("posts", postsDescending);
         theModel.addAttribute("notificationsSize", usersNotifications.size());
-
-        Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
-        if(inputFlashMap != null) {
-            theModel.addAttribute("postCreated", inputFlashMap.get("postCreated"));
-            theModel.addAttribute("postEdited", inputFlashMap.get("postEdited"));
-        }
 
         return "home";
     }

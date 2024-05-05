@@ -9,24 +9,17 @@
 <body>
 <main>
     <div class="row mt-2 mx-2 d-flex justify-content-center">
-        <div th:if="${postCreated}">
-            <div class="row mt-3" id="toRemove0">
-                <div class="alert alert-success offset-sm-2 col-sm-8">
-                    Post created successfully.
-                </div>
-            </div>
-        </div>
-        <div th:if="${postEdited}">
-            <div class="row mt-3" id="toRemove1">
-                <div class="alert alert-success offset-sm-2 col-sm-8">
-                    Post edited successfully.
-                </div>
-            </div>
-        </div>
         <div class="row mt-2">
             <div class="col-sm-8 offset-sm-2">
+                <div th:if="${posts.isEmpty()}">
+                    <div class="row mb-2 border border-primary bg-light rounded" id="no-posts-available">
+                        <div class="col-10 offset-1 p-2 text-center align-items-center">
+                            <span class="text-danger d-block">No posts available.</span>
+                        </div>
+                    </div>
+                </div>
                 <div th:each="post : ${posts}">
-                    <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded">
+                    <div class="row mb-3 border border-primary d-flex justify-content-center bg-light rounded" th:id="'post-' + ${post.getId()}">
                         <div class="row mt-1">
                             <div class="col-3 text-start">
                                 <span class="text-secondary d-none d-md-inline">Author: </span>
@@ -44,10 +37,32 @@
                                        th:text="Edit"></a>
                                 </div>
                                 <div class="col-3 offset-6 d-flex justify-content-end">
-                                    <a class="btn btn-danger" th:text="Delete"></a>
+                                    <a class="btn btn-danger" th:text="Delete" data-bs-toggle="modal" th:data-bs-target="'#modal-' + ${post.getId()}"></a>
                                 </div>
                             </div>
                         </div>
+                        <div class="modal fade" th:id="'modal-' + ${post.getId()}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Delete post?</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure you want to delete this post?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                        <div class="form-horizontal">
+                                            <div class="col-md-6 controls">
+                                                <button onClick="onDeletePostClick(this.id)" th:id="'post-delete-' + ${post.getId()}" class="btn btn-danger">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="row mt-4 d-flex justify-content-center">
                             <div class="col-12">
                                 <p th:text="${post.getContent()}" class="text-justify"></p>
@@ -62,14 +77,21 @@
                         </div>
                         <div class="row mx-1 mt-3 mb-2 pt-2 align-items-center border-top border-primary">
                             <div class="col-3 d-flex justify-content-start">
-                                <a class="btn btn-primary">
-                                    Like
-                                </a>
+                                <div>
+                                    <a class="btn btn-primary" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
+                                        Like
+                                    </a>
+                                </div>
+                                <div th:if="${false}">
+                                    <a class="btn btn-danger" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
+                                        Dislike
+                                    </a>
+                                </div>
                             </div>
                             <div class="col-3 d-flex justify-content-center align-items-center">
                                 <img th:src="@{/images/like.png}"
                                      class="img-fluid col-lg-3 col-xl-2 col-5 col-md-4 col-sm-6" alt="Like">
-                                <span th:text="${post.getLikes().size()}" class="d-inline-block ms-1 fw-bold"></span>
+                                <span th:text="${post.getLikes().size()}" th:id="'like-size-' + ${post.getId()}" class="d-inline-block ms-1 fw-bold"></span>
                             </div>
                             <div class="col-3 d-flex justify-content-center align-items-center">
                                 <img th:src="@{/images/comment.png}"
@@ -89,18 +111,6 @@
     </div>
 
     <script>
-        window.onload = function() {
-            const element0 = document.getElementById('toRemove0');
-            const element1 = document.getElementById('toRemove1');
-            setTimeout(function () {
-                if (element0) {
-                    element0.parentNode.removeChild(element0);
-                }
-                if (element1) {
-                    element1.parentNode.removeChild(element1);
-                }
-            }, 5000);
-        };
     </script>
 </main>
 </body>

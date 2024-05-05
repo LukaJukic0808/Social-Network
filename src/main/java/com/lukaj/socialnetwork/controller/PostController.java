@@ -1,13 +1,14 @@
 package com.lukaj.socialnetwork.controller;
 
-import com.lukaj.socialnetwork.entity.CommentEntity;
-import com.lukaj.socialnetwork.entity.NotificationEntity;
-import com.lukaj.socialnetwork.entity.PostEntity;
-import com.lukaj.socialnetwork.entity.UserEntity;
+import com.lukaj.socialnetwork.persistence.entity.CommentEntity;
+import com.lukaj.socialnetwork.persistence.entity.NotificationEntity;
+import com.lukaj.socialnetwork.persistence.entity.PostEntity;
+import com.lukaj.socialnetwork.persistence.entity.UserEntity;
 import com.lukaj.socialnetwork.service.CommentService;
 import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,9 +19,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -41,7 +44,8 @@ public class PostController {
     }
 
     @GetMapping("/posts/{postId}")
-    public String getPost(Model theModel, @PathVariable Integer postId) {
+    public String getPost(Model theModel, @PathVariable Integer postId,
+                            HttpServletRequest request) {
 
         Optional<PostEntity> post = postService.findOne(postId);
         UserEntity currentUser = userService.getCurrentUser();
@@ -59,6 +63,12 @@ public class PostController {
         theModel.addAttribute("user", currentUser);
         theModel.addAttribute("comments", comments);
         theModel.addAttribute("notificationsSize", usersNotifications.size());
+
+        Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
+        if(inputFlashMap != null) {
+            theModel.addAttribute("postCreated", inputFlashMap.get("postCreated"));
+            theModel.addAttribute("postEdited", inputFlashMap.get("postEdited"));
+        }
 
         return "post-detail-page";
     }
@@ -107,7 +117,7 @@ public class PostController {
             attributes.addFlashAttribute("postEdited", "successful");
         }
 
-        return "redirect:/social-network/home";
+        return String.format("redirect:/social-network/posts/%d", post.getId());
     }
 
     @GetMapping("/new-post")
@@ -137,11 +147,11 @@ public class PostController {
             return "new-post-page";
         }
 
-        postService.save(post);
+        PostEntity savedPost = postService.save(post);
 
         attributes.addFlashAttribute("postCreated", "successful");
 
-        return "redirect:/social-network/home";
+        return String.format("redirect:/social-network/posts/%d", savedPost.getId());
     }
 
 }
