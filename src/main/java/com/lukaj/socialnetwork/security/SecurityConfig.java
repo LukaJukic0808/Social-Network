@@ -46,7 +46,7 @@ public class SecurityConfig {
 
         http.csrf(csrf ->
                 csrf
-                        .ignoringRequestMatchers("/social-network/comments/*"
+                        .ignoringRequestMatchers("/social-network/api/**"
                         )
         );
 

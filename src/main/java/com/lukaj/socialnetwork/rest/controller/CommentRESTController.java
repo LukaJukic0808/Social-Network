@@ -22,7 +22,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 @RestController
-@RequestMapping("/social-network")
+@RequestMapping("/social-network/api")
 public class CommentRESTController {
 
     private final CommentService commentService;

@@ -45,6 +45,33 @@
     </div>
 
     <script>
+        function onDeleteNotificationClick(id) {
+
+            const regExp = /\d+/;
+            let notificationId = id.match(regExp)
+            const notification = document.getElementById("notification-" + notificationId)
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                data: `{"id": ${Number(notificationId)}}`,
+                url: "/social-network/api/notifications/delete-notification",
+                dataType: "json",
+                success: function (result) {
+
+                    notification.remove()
+                    if(result['remaining'] === 0) {
+                        const notificationsHeader = document.getElementById('notifications-header')
+                        const newNotifications = document.getElementById('new-notifications')
+                        notificationsHeader.innerText = "You have no new notifications."
+                        newNotifications.hidden = true
+                    }
+                },
+                error: function (result) {
+                    console.log("REST controller error")
+                }
+            });
+
+        }
     </script>
 </main>
 </body>

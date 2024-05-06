@@ -3,6 +3,7 @@ package com.lukaj.socialnetwork.controller;
 import com.lukaj.socialnetwork.persistence.entity.NotificationEntity;
 import com.lukaj.socialnetwork.persistence.entity.PostEntity;
 import com.lukaj.socialnetwork.persistence.entity.UserEntity;
+import com.lukaj.socialnetwork.service.LikeService;
 import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
@@ -20,12 +21,14 @@ public class HomeController {
     private final UserService userService;
     private final PostService postService;
     private final NotificationService notificationService;
+    private final LikeService likeService;
 
     public HomeController(UserService userService, PostService postService,
-                          NotificationService notificationService) {
+                          NotificationService notificationService, LikeService likeService) {
         this.userService = userService;
         this.postService = postService;
         this.notificationService = notificationService;
+        this.likeService = likeService;
     }
 
     @GetMapping("/home")
@@ -35,9 +38,11 @@ public class HomeController {
 
         List<PostEntity> postsDescending = postService.findAllOrderByCreatedAtDescending();
         List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
+        List<Integer> likedPostIDs = likeService.getLikedPostIDs();
 
         theModel.addAttribute("user", currentUser);
         theModel.addAttribute("posts", postsDescending);
+        theModel.addAttribute("likedPostIDs", likedPostIDs);
         theModel.addAttribute("notificationsSize", usersNotifications.size());
 
         return "home";

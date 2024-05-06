@@ -4,6 +4,7 @@ import com.lukaj.socialnetwork.persistence.entity.NotificationEntity;
 import com.lukaj.socialnetwork.persistence.entity.PostEntity;
 import com.lukaj.socialnetwork.persistence.entity.SaveUserStatus;
 import com.lukaj.socialnetwork.persistence.entity.UserEntity;
+import com.lukaj.socialnetwork.service.LikeService;
 import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
@@ -32,12 +33,14 @@ public class ProfileController {
     private final UserService userService;
     private final PostService postService;
     private final NotificationService notificationService;
+    private final LikeService likeService;
 
     public ProfileController(UserService userService, PostService postService,
-                             NotificationService notificationService) {
+                             NotificationService notificationService, LikeService likeService) {
         this.userService = userService;
         this.postService = postService;
         this.notificationService = notificationService;
+        this.likeService = likeService;
     }
 
     @GetMapping("/users/{userId}")
@@ -51,15 +54,18 @@ public class ProfileController {
             UserEntity currentUser = userService.getCurrentUser();
             List<PostEntity> posts = postService.findAllByAuthorOrderByCreatedAtDescending(userProfile);
             List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
+            List<Integer> likedPostIDs = likeService.getLikedPostIDs();
             theModel.addAttribute("userProfile", userProfile);
             theModel.addAttribute("user", currentUser);
             theModel.addAttribute("posts", posts);
+            theModel.addAttribute("likedPostIDs", likedPostIDs);
             theModel.addAttribute("notificationsSize", usersNotifications.size());
             theModel.addAttribute("totalLikes", userService.getLikesSizeByUsername(userProfile.getUsername()));
             theModel.addAttribute("totalComments", userService.getCommentsSizeByUsername(userProfile.getUsername()));
             Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
             if(inputFlashMap != null) {
-                theModel.addAttribute("postModified", inputFlashMap.get("management"));
+                theModel.addAttribute("userModified", inputFlashMap.get("management"));
+                theModel.addAttribute("postDeleted", inputFlashMap.get("postDeleted"));
             }
             return "user-profile-page";
         }

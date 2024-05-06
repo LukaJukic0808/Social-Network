@@ -25,7 +25,7 @@
                         <div class="col-3 d-flex justify-content-end align-items-center">
                             <img th:src="@{/images/comment.png}"
                                  class="img-fluid col-lg-3 col-xl-2 col-5 col-md-4 col-sm-6" alt="Like">
-                            <span th:text="${totalComments}" class="d-inline-block ms-1 fw-bold"></span>
+                            <span th:text="${totalComments}" class="d-inline-block ms-1 fw-bold" id="total-user-comments"></span>
                         </div>
                     </div>
                     <div th:if="${user.getUsername() == userProfile.getUsername()}">
@@ -41,10 +41,17 @@
         </div>
         <div class="row mt-2">
             <div class="col-sm-8 offset-sm-2">
-                <div th:if="${postModified}">
+                <div th:if="${userModified}">
                     <div class="row mt-0" id="toRemove0">
                         <div class="alert alert-success">
                             Profile modified successfully.
+                        </div>
+                    </div>
+                </div>
+                <div th:if="${postDeleted}">
+                    <div class="row mt-0" id="toRemove1">
+                        <div class="alert alert-success">
+                            Post deleted successfully.
                         </div>
                     </div>
                 </div>
@@ -90,7 +97,7 @@
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         <div class="form-horizontal">
                                             <div class="col-md-6 controls">
-                                                <button onClick="onDeletePostClick(this.id)" th:id="'post-delete-' + ${post.getId()}" class="btn btn-danger">Delete</button>
+                                                <button onClick="onDeletePostClick(this.id)" th:id="'post-delete-' + ${post.getId()}" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
                                             </div>
                                         </div>
                                     </div>
@@ -111,12 +118,12 @@
                         </div>
                         <div class="row mx-1 mt-3 mb-2 pt-2 align-items-center border-top border-primary">
                             <div class="col-3 d-flex justify-content-start">
-                                <div>
+                                <div th:if="${!likedPostIDs.contains(post.getId())}">
                                     <a class="btn btn-primary" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
                                         Like
                                     </a>
                                 </div>
-                                <div th:if="${false}">
+                                <div th:if="${likedPostIDs.contains(post.getId())}">
                                     <a class="btn btn-danger" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
                                         Dislike
                                     </a>
@@ -147,12 +154,108 @@
     <script>
         window.onload = function() {
             const element0 = document.getElementById('toRemove0');
+            const element1 = document.getElementById('toRemove1');
             setTimeout(function () {
                 if (element0) {
                     element0.parentNode.removeChild(element0);
                 }
+                if (element1) {
+                    element1.parentNode.removeChild(element1);
+                }
             }, 5000);
         };
+
+        function onLikeClick(id) {
+
+            const regExp = /\d+/;
+            const likeButton = document.getElementById(id)
+            let postId = id.match(regExp)
+            if(likeButton.innerText === "Like") {
+                $.ajax({
+                    type: "post",
+                    contentType: "application/json",
+                    data: `{"postId": ${Number(postId)}}`,
+                    url: "/social-network/api/posts/like",
+                    dataType: "json",
+                    success: function (result) {
+
+                        likeButton.innerText = "Dislike"
+                        likeButton.setAttribute("class", "btn btn-danger")
+                        const likeSize = document.getElementById('like-size-' + postId)
+                        let likeSizeNumber = Number(likeSize.innerText)
+                        likeSize.innerText = String(likeSizeNumber + 1)
+
+                        if(result['selfReaction']) {
+                            const totalLikes = document.getElementById("total-user-likes")
+                            let totalLikeSizeNumber = Number(totalLikes.innerText)
+                            totalLikes.innerText = String(totalLikeSizeNumber + 1)
+                        }
+                    },
+                    error: function (result) {
+                        console.log("REST controller error")
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "post",
+                    contentType: "application/json",
+                    data: `{"postId": ${Number(postId)}}`,
+                    url: "/social-network/api/posts/dislike",
+                    dataType: "json",
+                    success: function (result) {
+
+                        likeButton.innerText = "Like"
+                        likeButton.setAttribute("class", "btn btn-primary")
+                        const likeSize = document.getElementById('like-size-' + postId)
+                        let likeSizeNumber = Number(likeSize.innerText)
+                        likeSize.innerText = String(likeSizeNumber - 1)
+
+                        if(result['selfReaction']) {
+                            const totalLikes = document.getElementById("total-user-likes")
+                            let totalLikeSizeNumber = Number(totalLikes.innerText)
+                            totalLikes.innerText = String(totalLikeSizeNumber - 1)
+                        }
+                    },
+                    error: function (result) {
+                        console.log("REST controller error")
+                    }
+                });
+            }
+        }
+
+        function onDeletePostClick(id) {
+
+            const regExp = /\d+/;
+            let postId = id.match(regExp)
+            const post = document.getElementById("post-" + postId)
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                data: `{"postId": ${Number(postId)}}`,
+                url: "/social-network/api/posts/delete-post",
+                dataType: "json",
+                success: function (result) {
+
+                    post.remove()
+
+                    if(result['notificationsRemaining'] === 0) {
+                        const newNotifications = document.getElementById('new-notifications')
+                        if(newNotifications) {
+                            newNotifications.hidden = true
+                        }
+                    }
+
+                    const totalLikes = document.getElementById("total-user-likes")
+                    const totalComments = document.getElementById("total-user-comments")
+                    totalLikes.innerText = result['userLikes']
+                    totalComments.innerText = result['userComments']
+                },
+                error: function (result) {
+                    console.log("REST controller error")
+                }
+            });
+
+        }
     </script>
 </main>
 </body>

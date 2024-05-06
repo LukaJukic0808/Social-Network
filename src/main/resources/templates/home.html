@@ -10,9 +10,9 @@
 <main>
     <div class="row mt-2 mx-2 d-flex justify-content-center">
         <div class="row mt-2">
-            <div class="col-sm-8 offset-sm-2">
+            <div class="col-sm-8 offset-sm-2" id="no-posts-available-container">
                 <div th:if="${posts.isEmpty()}">
-                    <div class="row mb-2 border border-primary bg-light rounded" id="no-posts-available">
+                    <div class="row mb-2 border border-primary bg-light rounded">
                         <div class="col-10 offset-1 p-2 text-center align-items-center">
                             <span class="text-danger d-block">No posts available.</span>
                         </div>
@@ -55,7 +55,7 @@
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                         <div class="form-horizontal">
                                             <div class="col-md-6 controls">
-                                                <button onClick="onDeletePostClick(this.id)" th:id="'post-delete-' + ${post.getId()}" class="btn btn-danger">Delete</button>
+                                                <button onClick="onDeletePostClick(this.id)" th:id="'post-delete-' + ${post.getId()}" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
                                             </div>
                                         </div>
                                     </div>
@@ -77,12 +77,12 @@
                         </div>
                         <div class="row mx-1 mt-3 mb-2 pt-2 align-items-center border-top border-primary">
                             <div class="col-3 d-flex justify-content-start">
-                                <div>
+                                <div th:if="${!likedPostIDs.contains(post.getId())}">
                                     <a class="btn btn-primary" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
                                         Like
                                     </a>
                                 </div>
-                                <div th:if="${false}">
+                                <div th:if="${likedPostIDs.contains(post.getId())}">
                                     <a class="btn btn-danger" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
                                         Dislike
                                     </a>
@@ -111,6 +111,91 @@
     </div>
 
     <script>
+        function onLikeClick(id) {
+
+            const regExp = /\d+/;
+            const likeButton = document.getElementById(id)
+            let postId = id.match(regExp)
+            if(likeButton.innerText === "Like") {
+                $.ajax({
+                    type: "post",
+                    contentType: "application/json",
+                    data: `{"postId": ${Number(postId)}}`,
+                    url: "/social-network/api/posts/like",
+                    dataType: "json",
+                    success: function (result) {
+
+                        likeButton.innerText = "Dislike"
+                        likeButton.setAttribute("class", "btn btn-danger")
+                        const likeSize = document.getElementById('like-size-' + postId)
+                        let likeSizeNumber = Number(likeSize.innerText)
+                        likeSize.innerText = String(likeSizeNumber + 1)
+                    },
+                    error: function (result) {
+                        console.log("REST controller error")
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "post",
+                    contentType: "application/json",
+                    data: `{"postId": ${Number(postId)}}`,
+                    url: "/social-network/api/posts/dislike",
+                    dataType: "json",
+                    success: function (result) {
+
+                        likeButton.innerText = "Like"
+                        likeButton.setAttribute("class", "btn btn-primary")
+                        const likeSize = document.getElementById('like-size-' + postId)
+                        let likeSizeNumber = Number(likeSize.innerText)
+                        likeSize.innerText = String(likeSizeNumber - 1)
+                    },
+                    error: function (result) {
+                        console.log("REST controller error")
+                    }
+                });
+            }
+        }
+
+        function onDeletePostClick(id) {
+
+            const regExp = /\d+/;
+            let postId = id.match(regExp)
+            const post = document.getElementById("post-" + postId)
+            $.ajax({
+                type: "post",
+                contentType: "application/json",
+                data: `{"postId": ${Number(postId)}}`,
+                url: "/social-network/api/posts/delete-post",
+                dataType: "json",
+                success: function (result) {
+
+                    post.remove()
+
+                    if(result['notificationsRemaining'] === 0) {
+                        const newNotifications = document.getElementById('new-notifications')
+                        if(newNotifications) {
+                            newNotifications.hidden = true
+                        }
+                    }
+
+                    if(result['postsRemaining'] === 0) {
+                        const noPostsAvailable = $('#no-posts-available-container')
+                        noPostsAvailable.html(
+                            `<div class="row mb-2 border border-primary bg-light rounded">
+                                <div class="col-10 offset-1 p-2 text-center align-items-center">
+                                    <span class="text-danger d-block">No posts available.</span>
+                                </div>
+                            </div>`
+                        )
+                    }
+                },
+                error: function (result) {
+                    console.log("REST controller error")
+                }
+            });
+
+        }
     </script>
 </main>
 </body>

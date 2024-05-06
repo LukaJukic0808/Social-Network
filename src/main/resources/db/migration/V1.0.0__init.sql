@@ -25,8 +25,8 @@ create table post
 create table comment
 (
     id                   serial                not null primary key,
-    author_id            integer,
-    post_id              integer,
+    author_id            integer               not null,
+    post_id              integer               not null,
     content              varchar(1000)         not null,
     created_at           timestamp             not null,
     constraint FK__COMMENT__AUTHOR_ID foreign key (author_id) references users (id),
@@ -36,9 +36,9 @@ create table comment
 create table notification
 (
     id                   serial                not null primary key,
-    sender_id            integer,
-    receiver_id          integer,
-    post_id              integer,
+    sender_id            integer               not null,
+    receiver_id          integer               not null,
+    post_id              integer               not null,
     content              varchar(255)          not null,
     created_at           timestamp             not null,
     constraint FK__NOTIFICATION__SENDER_ID foreign key (sender_id) references users (id),
@@ -49,12 +49,9 @@ create table notification
 create table likes
 (
     id                   serial                not null primary key,
-    user_id              integer,
-    post_id              integer,
+    user_id              integer               not null,
+    post_id              integer               not null,
     created_at           timestamp             not null,
     constraint FK__LIKES__USER_ID foreign key (user_id) references users (id),
     constraint FK__LIKES__POST_ID foreign key (post_id) references post (id)
 );
-
-
-

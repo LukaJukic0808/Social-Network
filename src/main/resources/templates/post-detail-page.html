@@ -60,12 +60,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                                     <form action="#" method="POST" th:action="@{/social-network/delete-post}" th:object="${post}" class="form-horizontal">
-                                        <input type="hidden" th:field="*{id}"/>
-                                        <input type="hidden" th:field="*{createdAt}"/>
-                                        <input type="hidden" th:field="*{content}"/>
-                                        <input type="hidden" th:field="*{author}"/>
-                                        <input type="hidden" th:field="*{imageUrl}"/>
-                                        <input type="hidden" th:field="*{enableComments}"/>
+                                        <input type="hidden" th:field="*{id}" id="postId"/>
                                         <div class="col-md-6 controls">
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </div>
@@ -88,12 +83,12 @@
                     </div>
                     <div class="row mx-1 mt-3 mb-2 pt-2 align-items-center border-top border-primary">
                         <div class="col-3 d-flex justify-content-start">
-                            <div>
+                            <div th:if="${!likedPostIDs.contains(post.getId())}">
                                 <a class="btn btn-primary" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
                                     Like
                                 </a>
                             </div>
-                            <div th:if="${false}">
+                            <div th:if="${likedPostIDs.contains(post.getId())}">
                                 <a class="btn btn-danger" onClick="onLikeClick(this.id)" th:id="'post-like-' + ${post.getId()}">
                                     Dislike
                                 </a>
@@ -123,7 +118,7 @@
                         <div th:if="${post.enableComments}">
                             <div class="row mb-2 border border-primary bg-light rounded">
                                 <div class="form-horizontal">
-                                    <input id="postId" type="hidden" th:value="${post.getId()}">
+                                    <input type="hidden" th:value="${post.getId()}">
                                     <div class="input-group mt-2 mb-2">
                                         <textarea id="commentContent" placeholder="Write something..." class="form-control" rows="4"></textarea>
                                     </div>
@@ -209,10 +204,9 @@
                     type: "post",
                     contentType: "application/json",
                     data: `{"commentContent": "${commentText.trim()}", "postId": ${postId}}`,
-                    url: "/social-network/comments/add-comment",
+                    url: "/social-network/api/comments/add-comment",
                     dataType: "json",
                     success: function (result) {
-                        $().append(result);
 
                         const newCommentArea = $('#newComment')
                         if(document.contains(document.getElementById("emptyCommentAlert"))) {
@@ -346,10 +340,9 @@
                 type: "post",
                 contentType: "application/json",
                 data: `{"id": ${Number(commentId)}}`,
-                url: "/social-network/comments/delete-comment",
+                url: "/social-network/api/comments/delete-comment",
                 dataType: "json",
                 success: function (result) {
-                    $().append(result);
 
                     comment.remove()
                     const commentSize = document.getElementById('commentSize')
@@ -361,6 +354,52 @@
                 }
             });
 
+        }
+
+        function onLikeClick(id) {
+
+            const regExp = /\d+/;
+            const likeButton = document.getElementById(id)
+            let postId = id.match(regExp)
+            if(likeButton.innerText === "Like") {
+                $.ajax({
+                    type: "post",
+                    contentType: "application/json",
+                    data: `{"postId": ${Number(postId)}}`,
+                    url: "/social-network/api/posts/like",
+                    dataType: "json",
+                    success: function (result) {
+
+                        likeButton.innerText = "Dislike"
+                        likeButton.setAttribute("class", "btn btn-danger")
+                        const likeSize = document.getElementById('likeSize')
+                        let likeSizeNumber = Number(likeSize.innerText)
+                        likeSize.innerText = String(likeSizeNumber + 1)
+                    },
+                    error: function (result) {
+                        console.log("REST controller error")
+                    }
+                });
+            } else {
+                $.ajax({
+                    type: "post",
+                    contentType: "application/json",
+                    data: `{"postId": ${Number(postId)}}`,
+                    url: "/social-network/api/posts/dislike",
+                    dataType: "json",
+                    success: function (result) {
+
+                        likeButton.innerText = "Like"
+                        likeButton.setAttribute("class", "btn btn-primary")
+                        const likeSize = document.getElementById('likeSize')
+                        let likeSizeNumber = Number(likeSize.innerText)
+                        likeSize.innerText = String(likeSizeNumber - 1)
+                    },
+                    error: function (result) {
+                        console.log("REST controller error")
+                    }
+                });
+            }
         }
 
     </script>

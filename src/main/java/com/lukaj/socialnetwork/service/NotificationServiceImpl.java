@@ -7,14 +7,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NotificationServiceImpl implements NotificationService {
 
     private final NotificationRepository notificationRepository;
+    private final UserService userService;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository,
+                                   UserService userService) {
         this.notificationRepository = notificationRepository;
+        this.userService = userService;
     }
 
     @Override
@@ -32,5 +36,15 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void remove(NotificationEntity notificationEntity) {
         notificationRepository.delete(notificationEntity);
+    }
+
+    @Override
+    public Optional<NotificationEntity> findById(Integer id) {
+        return notificationRepository.findById(id);
+    }
+
+    @Override
+    public Integer getNotificationsCount() {
+        return findAllNotificationsByReceiver(userService.getCurrentUser()).size();
     }
 }

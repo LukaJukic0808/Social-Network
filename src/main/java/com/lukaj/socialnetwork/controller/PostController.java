@@ -5,6 +5,7 @@ import com.lukaj.socialnetwork.persistence.entity.NotificationEntity;
 import com.lukaj.socialnetwork.persistence.entity.PostEntity;
 import com.lukaj.socialnetwork.persistence.entity.UserEntity;
 import com.lukaj.socialnetwork.service.CommentService;
+import com.lukaj.socialnetwork.service.LikeService;
 import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
@@ -34,13 +35,16 @@ public class PostController {
     private final PostService postService;
     private final NotificationService notificationService;
     private final CommentService commentService;
+    private final LikeService likeService;
 
     public PostController(UserService userService, PostService postService,
-                          NotificationService notificationService, CommentService commentService) {
+                          NotificationService notificationService, CommentService commentService,
+                          LikeService likeService) {
         this.userService = userService;
         this.postService = postService;
         this.notificationService = notificationService;
         this.commentService = commentService;
+        this.likeService = likeService;
     }
 
     @GetMapping("/posts/{postId}")
@@ -50,6 +54,8 @@ public class PostController {
         Optional<PostEntity> post = postService.findOne(postId);
         UserEntity currentUser = userService.getCurrentUser();
         List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
+        List<Integer> likedPostIDs = likeService.getLikedPostIDs();
+
 
         if (post.isEmpty()) {
             return "redirect:/social-network/home";
@@ -62,6 +68,7 @@ public class PostController {
         theModel.addAttribute("post", currentPost);
         theModel.addAttribute("user", currentUser);
         theModel.addAttribute("comments", comments);
+        theModel.addAttribute("likedPostIDs", likedPostIDs);
         theModel.addAttribute("notificationsSize", usersNotifications.size());
 
         Map<String, ?> inputFlashMap = RequestContextUtils.getInputFlashMap(request);
@@ -152,6 +159,21 @@ public class PostController {
         attributes.addFlashAttribute("postCreated", "successful");
 
         return String.format("redirect:/social-network/posts/%d", savedPost.getId());
+    }
+
+    @PostMapping("/delete-post")
+    public String processPostDelete(@ModelAttribute("post") PostEntity post,
+                                    RedirectAttributes attributes) {
+
+        UserEntity currentUser = userService.getCurrentUser();
+
+        PostEntity postEntity = postService.findOne(post.getId()).get();
+
+        postService.remove(postEntity);
+
+        attributes.addFlashAttribute("postDeleted", "successful");
+
+        return String.format("redirect:/social-network/users/%d", currentUser.getId());
     }
 
 }
