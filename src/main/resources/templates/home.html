@@ -137,7 +137,7 @@
                 });
             } else {
                 $.ajax({
-                    type: "post",
+                    type: "delete",
                     contentType: "application/json",
                     data: `{"postId": ${Number(postId)}}`,
                     url: "/social-network/api/posts/dislike",
@@ -163,7 +163,7 @@
             let postId = id.match(regExp)
             const post = document.getElementById("post-" + postId)
             $.ajax({
-                type: "post",
+                type: "delete",
                 contentType: "application/json",
                 data: `{"postId": ${Number(postId)}}`,
                 url: "/social-network/api/posts/delete-post",

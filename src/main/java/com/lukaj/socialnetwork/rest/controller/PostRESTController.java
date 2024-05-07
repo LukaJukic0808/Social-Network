@@ -12,6 +12,7 @@ import com.lukaj.socialnetwork.service.LikeService;
 import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,7 +70,7 @@ public class PostRESTController {
         return new LikeAndDislikeResponse(false);
     }
 
-    @PostMapping(value = "/posts/dislike", consumes = "application/json")
+    @DeleteMapping(value = "/posts/dislike", consumes = "application/json")
     @ResponseBody
     public LikeAndDislikeResponse dislike(@RequestBody LikeAndDislikeRequest request) {
 
@@ -86,7 +87,7 @@ public class PostRESTController {
         return new LikeAndDislikeResponse(false);
     }
 
-    @PostMapping(value = "/posts/delete-post", consumes = "application/json")
+    @DeleteMapping(value = "/posts/delete-post", consumes = "application/json")
     @ResponseBody
     public PostResponse deletePost(@RequestBody DeletePostRequest request) {
 

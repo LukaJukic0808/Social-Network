@@ -6,7 +6,7 @@ import com.lukaj.socialnetwork.rest.request.DeleteNotificationRequest;
 import com.lukaj.socialnetwork.rest.response.NotificationResponse;
 import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.UserService;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,7 +25,7 @@ public class NotificationRESTController {
         this.userService = userService;
     }
 
-    @PostMapping(value = "/notifications/delete-notification", consumes = "application/json")
+    @DeleteMapping(value = "/notifications/delete-notification", consumes = "application/json")
     @ResponseBody
     public NotificationResponse deleteNotification(@RequestBody DeleteNotificationRequest request) {
 

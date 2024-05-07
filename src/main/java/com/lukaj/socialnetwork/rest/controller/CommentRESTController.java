@@ -11,6 +11,7 @@ import com.lukaj.socialnetwork.service.CommentService;
 import com.lukaj.socialnetwork.service.NotificationService;
 import com.lukaj.socialnetwork.service.PostService;
 import com.lukaj.socialnetwork.service.UserService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -73,7 +74,7 @@ public class CommentRESTController {
                 savedComment.getContent());
     }
 
-    @PostMapping(value = "/comments/delete-comment", consumes = "application/json")
+    @DeleteMapping(value = "/comments/delete-comment", consumes = "application/json")
     @ResponseBody
     public CommentResponse deleteComment(@RequestBody DeleteCommentRequest request) {
 

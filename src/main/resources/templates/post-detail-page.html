@@ -337,7 +337,7 @@
             let commentId = id.match(regExp)
             const comment = document.getElementById("comment-" + commentId)
             $.ajax({
-                type: "post",
+                type: "delete",
                 contentType: "application/json",
                 data: `{"id": ${Number(commentId)}}`,
                 url: "/social-network/api/comments/delete-comment",
@@ -382,7 +382,7 @@
                 });
             } else {
                 $.ajax({
-                    type: "post",
+                    type: "delete",
                     contentType: "application/json",
                     data: `{"postId": ${Number(postId)}}`,
                     url: "/social-network/api/posts/dislike",

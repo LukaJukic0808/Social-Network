@@ -51,7 +51,7 @@
             let notificationId = id.match(regExp)
             const notification = document.getElementById("notification-" + notificationId)
             $.ajax({
-                type: "post",
+                type: "delete",
                 contentType: "application/json",
                 data: `{"id": ${Number(notificationId)}}`,
                 url: "/social-network/api/notifications/delete-notification",
