@@ -106,10 +106,12 @@ public class PostController {
                                   Model theModel) {
 
         UserEntity currentUser = userService.getCurrentUser();
+        List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
 
         if (bindingResult.hasErrors()) {
             theModel.addAttribute("post", post);
             theModel.addAttribute("user", currentUser);
+            theModel.addAttribute("notificationsSize", usersNotifications.size());
             return "edit-post-page";
         }
 
@@ -147,10 +149,12 @@ public class PostController {
                                       Model theModel) {
 
         UserEntity currentUser = userService.getCurrentUser();
+        List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
 
         if (bindingResult.hasErrors()) {
             theModel.addAttribute("post", post);
             theModel.addAttribute("user", currentUser);
+            theModel.addAttribute("notificationsSize", usersNotifications.size());
             return "new-post-page";
         }
 

@@ -33,6 +33,7 @@ public class LikeServiceImpl implements LikeService {
         return likeRepository.save(likeEntity);
     }
 
+    // FetchType.EAGER, same as in CommentServiceImpl
     @Transactional
     @Override
     public void remove(LikeEntity likeEntity) {

@@ -61,9 +61,7 @@ public class PostRESTController {
             notification.setReceiver(post.getAuthor());
 
             notificationService.save(notification);
-        }
 
-        if(post.getAuthor().getUsername().equals(currentUser.getUsername())) {
             return new LikeAndDislikeResponse(true);
         }
 

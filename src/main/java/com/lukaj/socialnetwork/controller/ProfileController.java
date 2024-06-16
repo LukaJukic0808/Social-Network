@@ -92,8 +92,12 @@ public class ProfileController {
                                         @RequestParam("passwordRepeated") String repeatedPassword,
                                         Model theModel) {
 
+        UserEntity currentUser = userService.getCurrentUser();
+        List<NotificationEntity> usersNotifications = notificationService.findAllNotificationsByReceiver(currentUser);
+
         if (bindingResult.hasErrors()) {
             theModel.addAttribute("user", user);
+            theModel.addAttribute("notificationsSize", usersNotifications.size());
             return "manage-user-page";
         }
 
@@ -103,6 +107,7 @@ public class ProfileController {
 
             theModel.addAttribute("user", user);
             theModel.addAttribute("passwordNoMatch", "Password not repeated correctly. Please try again.");
+            theModel.addAttribute("notificationsSize", usersNotifications.size());
 
             return "manage-user-page";
         }
